@@ -1,6 +1,6 @@
 # ARM_Minesweeper
-ECE 243 Final Course Project
-Created By: Mark Qi and Zihui Lu
+ECE 243 Final Course Project <br />
+Created By: Mark Qi and Zihui Lu <br />
 Professor: Jonathan Rose
 
 ## Game Description
