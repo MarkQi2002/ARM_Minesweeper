@@ -53,7 +53,7 @@ void wait_for_vsync();
 void clear_screen();
 void swap(int *xp, int *yp);
 void draw_line(int x0, int y0, int x1, int y1, short int line_color);
-void draw_box(int x0, int y0, short int box_color);
+void draw_square(int x0, int y0, int size, short int box_color);
 void plot_pixel(int x, int y, short int pixel_color);
 
 // Data Structure Declaration
@@ -156,10 +156,10 @@ void draw_line(int x0, int y0, int x1, int y1, short int line_color){
 }
 
 // Function For Drawing A Box
-void draw_box(int x0, int y0, short int box_color){
+void draw_square(int x0, int y0, int size, short int box_color){
 	int row_num, col_num;
-    for (row_num = -1; row_num <= 1; row_num++){
-        for (col_num = -1; col_num <= 1; col_num++){
+    for (row_num = 0; row_num < size; row_num++){
+        for (col_num = 0; col_num < size; col_num++){
             plot_pixel(x0 + col_num, y0 + row_num, box_color);
         }
     }
