@@ -39,6 +39,10 @@
 #define FALSE 0
 #define TRUE 1
 
+/* Mode Of Operation */
+#define SVC_MODE 0x00000013
+#define INT_ENABLE 0b01000000
+
 /* Interrupt controller (GIC) CPU interface(s) */
 #define ENABLE                0x00000001
 #define MPCORE_GIC_CPUIF      0xFFFEC100    // PERIPH_BASE + 0x100
@@ -70,6 +74,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <time.h>
+
 
 // Begin part3.c code for Lab 7
 volatile int pixel_buffer_start; // global variable
@@ -226,6 +231,12 @@ void draw_game_frame(){
     // Left Column And Right Column
     draw_rectangle(GAME_FRAME_LEFT_X, GAME_FRAME_UPPER_Y + GAME_FRAME_WIDTH, GAME_FRAME_LEFT_X + GAME_FRAME_WIDTH, GAME_FRAME_BOTTOM_Y - GAME_FRAME_WIDTH, GREY);
     draw_rectangle(GAME_FRAME_RIGHT_X - GAME_FRAME_WIDTH, GAME_FRAME_UPPER_Y + GAME_FRAME_WIDTH, GAME_FRAME_RIGHT_X, GAME_FRAME_BOTTOM_Y - GAME_FRAME_WIDTH, GREY);
+}
+
+// Turn On Interrupts in the ARM processor
+void enable_A9_interrupts(void){
+    int status = SVC_MODE | INT_ENABLE;
+    asm("msr cpsr, %[ps]" : : [ps] "r"(status));
 }
 
 // Function Used For Configuring The Generic Interrupt Controller (GIC)
