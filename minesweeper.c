@@ -39,6 +39,16 @@
 #define FALSE 0
 #define TRUE 1
 
+// Constants For Information Row
+#define INFORMATION_ROW_HEIGHT 10
+
+// Constants For Game Frame
+#define GAME_FRAME_UPPER_Y 10
+#define GAME_FRAME_BOTTOM_Y 240
+#define GAME_FRAME_LEFT_X 0
+#define GAME_FRAME_RIGHT_X 320
+#define GAME_FRAME_WIDTH 10
+
 // Include Important Libraries
 #include <stdlib.h>
 #include <stdio.h>
@@ -54,7 +64,10 @@ void clear_screen();
 void swap(int *xp, int *yp);
 void draw_line(int x0, int y0, int x1, int y1, short int line_color);
 void draw_square(int x0, int y0, int size, short int box_color);
+void draw_rectangle(int x0, int y0, int x1, int y1, short int rectangle_color);
 void plot_pixel(int x, int y, short int pixel_color);
+
+void draw_game_frame();
 
 // Data Structure Declaration
 
@@ -74,12 +87,14 @@ int main(void)
     /* initialize a pointer to the pixel buffer, used by drawing functions */
     pixel_buffer_start = *pixel_ctrl_ptr;
     clear_screen(); // pixel_buffer_start points to the pixel buffer
+    draw_game_frame();
     
     /* set back pixel buffer to start of SDRAM memory */
     *(pixel_ctrl_ptr + 1) = 0xC0000000;
     pixel_buffer_start = *(pixel_ctrl_ptr + 1); // we draw on the back buffer
     clear_screen(); // pixel_buffer_start points to the pixel buffer
-
+    draw_game_frame();
+    
     while (1)
     {
         wait_for_vsync(); // swap front and back buffers on VGA vertical sync
@@ -165,7 +180,29 @@ void draw_square(int x0, int y0, int size, short int box_color){
     }
 }
 
+// Function For Drawing A Rectangle
+void draw_rectangle(int x0, int y0, int x1, int y1, short int rectangle_color){
+    // Important Information (x0 < x1, y0 < y1)
+    int row_num, col_num;
+    for (row_num = y0; row_num < y1; row_num++){
+        for (col_num = x0; col_num < x1; col_num++){
+            plot_pixel(col_num, row_num, rectangle_color);
+        }
+    }
+}
+
 // Function Used For Drawing A Single Pixel On the Screen
 void plot_pixel(int x, int y, short int pixel_color){
     *(short int *)(pixel_buffer_start + (y << 10) + (x << 1)) = pixel_color;
+}
+
+// Function Used For Drawing A Frame Around The Game
+void draw_game_frame(){
+    // Top Row And Bottom Row
+    draw_rectangle(GAME_FRAME_LEFT_X, GAME_FRAME_UPPER_Y, GAME_FRAME_RIGHT_X, GAME_FRAME_UPPER_Y + GAME_FRAME_WIDTH, GREY);
+    draw_rectangle(GAME_FRAME_LEFT_X, GAME_FRAME_BOTTOM_Y - GAME_FRAME_WIDTH, GAME_FRAME_RIGHT_X, GAME_FRAME_BOTTOM_Y, GREY);
+
+    // Left Column And Right Column
+    draw_rectangle(GAME_FRAME_LEFT_X, GAME_FRAME_UPPER_Y + GAME_FRAME_WIDTH, GAME_FRAME_LEFT_X + GAME_FRAME_WIDTH, GAME_FRAME_BOTTOM_Y - GAME_FRAME_WIDTH, GREY);
+    draw_rectangle(GAME_FRAME_RIGHT_X - GAME_FRAME_WIDTH, GAME_FRAME_UPPER_Y + GAME_FRAME_WIDTH, GAME_FRAME_RIGHT_X, GAME_FRAME_BOTTOM_Y - GAME_FRAME_WIDTH, GREY);
 }
