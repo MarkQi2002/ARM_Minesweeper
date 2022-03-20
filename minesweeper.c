@@ -39,6 +39,22 @@
 #define FALSE 0
 #define TRUE 1
 
+/* Interrupt controller (GIC) CPU interface(s) */
+#define ENABLE                0x00000001
+#define MPCORE_GIC_CPUIF      0xFFFEC100    // PERIPH_BASE + 0x100
+#define ICCICR                0x00          // offset to CPU interface control reg
+#define ICCPMR                0x04          // offset to interrupt priority mask reg
+#define ICCIAR                0x0C          // offset to interrupt acknowledge reg
+#define ICCEOIR               0x10          // offset to end of interrupt reg
+
+/* Interrupt controller (GIC) distributor interface(s) */
+#define MPCORE_GIC_DIST       0xFFFED000    // PERIPH_BASE + 0x1000
+#define ICDDCR                0x00          // offset to distributor control reg
+#define ICDISER               0x100         // offset to interrupt set-enable regs
+#define ICDICER               0x180         // offset to interrupt clear-enable regs
+#define ICDIPTR               0x800         // offset to interrupt processor targets regs
+#define ICDICFR               0xC00         // offset to interrupt configuration regs
+
 // Constants For Information Row
 #define INFORMATION_ROW_HEIGHT 10
 
@@ -69,10 +85,15 @@ void plot_pixel(int x, int y, short int pixel_color);
 
 void draw_game_frame();
 
+void config_GIC(void);
+
 // Data Structure Declaration
 
 int main(void)
-{
+{   
+    // Variable Declaration For Time Keeping
+
+
     // Variable Declaration
     srand(time(NULL));
 
@@ -205,4 +226,26 @@ void draw_game_frame(){
     // Left Column And Right Column
     draw_rectangle(GAME_FRAME_LEFT_X, GAME_FRAME_UPPER_Y + GAME_FRAME_WIDTH, GAME_FRAME_LEFT_X + GAME_FRAME_WIDTH, GAME_FRAME_BOTTOM_Y - GAME_FRAME_WIDTH, GREY);
     draw_rectangle(GAME_FRAME_RIGHT_X - GAME_FRAME_WIDTH, GAME_FRAME_UPPER_Y + GAME_FRAME_WIDTH, GAME_FRAME_RIGHT_X, GAME_FRAME_BOTTOM_Y - GAME_FRAME_WIDTH, GREY);
+}
+
+// Function Used For Configuring The Generic Interrupt Controller (GIC)
+void config_GIC(void){
+    // Used To Calculate Register Addresses
+    int address;
+
+    // Configure the FPGA interval timer and KEYS interrupts
+    *((int *) 0xFFFED848) = 0x00000101;
+    *((int *) 0xFFFED108) = 0x00000300;
+
+    // Set Interrupt Priority Mask Register (ICCPMR). Enable Interrupts of all priorities
+    address = MPCORE_GIC_CPUIF + ICCPMR;
+    *((int *) address) = 0xFFFF;
+
+    // Set CPU Interface Control Register (ICCICR). Enable signaling of interrupts
+    address = MPCORE_GIC_CPUIF + ICCICR;
+    *((int *) address) = ENABLE;
+
+    // Configure the Distributor Control Register (ICDDCR) to send pending interrupts to CPUs
+    address = MPCORE_GIC_CPUIF + ICDDCR;
+    *((int *) address) = ENABLE;
 }
