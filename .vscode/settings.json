@@ -1,3 +1,25 @@
 {
-    "C_Cpp.errorSquiggles": "Disabled"
+    "C_Cpp.errorSquiggles": "Disabled",
+    "files.associations": {
+        "__bit_reference": "c",
+        "__node_handle": "c",
+        "atomic": "c",
+        "bitset": "c",
+        "chrono": "c",
+        "cstddef": "c",
+        "__memory": "c",
+        "limits": "c",
+        "locale": "c",
+        "optional": "c",
+        "ratio": "c",
+        "system_error": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "vector": "c",
+        "__functional_base": "c",
+        "algorithm": "c",
+        "functional": "c",
+        "iterator": "c",
+        "memory": "c"
+    }
 }

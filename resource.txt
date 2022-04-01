@@ -8,3 +8,6 @@ int column = sizeof(numberArray[0]) / sizeof(numberArray[0][0]);
 
 #define GAME_FRAME_UPPER_Y 15   // change from 10 to 15
 #define GAME_FRAME_WIDTH 20     // change from 10 to 20
+
+
+// remember to uncomment srand(time(NULL))
