@@ -120,6 +120,7 @@ Note: 	A. When PS/2 keyboard detects an input, LEDRs reads the input value and d
 #include <stdio.h>
 #include <stdbool.h>
 #include <time.h>
+#include <math.h>
 
 // Begin part3.c code for Lab 7
 volatile int pixel_buffer_start; // global variable
@@ -1104,21 +1105,31 @@ int main(void)
 	int x = 0;
 	int y = 0;
 
+	bomb_array[5][5] = 1;
+	// bomb_array[1][1] = 1;
+	// bomb_array[7][11] = 1;
+	// bomb_array[3][8] = 1;
+	// bomb_array[6][2] = 1;
+	// bomb_array[2][0] = 1;
+	// bomb_array[3][1] = 1;
+	// bomb_array[6][6] = 1;
+
+
 	// Initialize mines
-	for(int i = 0; i < 20; i++){
-		for (int j = 0; j < 14; j++){
-			// one mine every 5 squares
-			// rand in a range of 1 ~ 5
-			int value = rand() % 5 + 1;
-			if (value == 1){
-				bomb_array[i][j] = 1;
-			}else{
-				bomb_array[i][j] = 0;
-			}
-			// printf("%d ", bomb_array[i][j]);
-		}
-		// printf("\n");
-	}
+	// for(int i = 0; i < 20; i++){
+	// 	for (int j = 0; j < 14; j++){
+	// 		// one mine every 8 squares
+	// 		// rand in a range of 1 ~ 8
+	// 		int value = rand() % 8 + 1;
+	// 		if (value == 1){
+	// 			bomb_array[i][j] = 1;
+	// 		}else{
+	// 			bomb_array[i][j] = 0;
+	// 		}
+	// 		// printf("%d ", bomb_array[i][j]);
+	// 	}
+	// 	// printf("\n");
+	// }
 
 	// drawing game board 20 by 14
 	draw_game_board(num_array);
@@ -1282,15 +1293,85 @@ int main(void)
 				printf("\nLOSE\n");
 			}
 			else{
-				int num_mines = find_mine_num(x, y, bomb_array);
-				if (num_mines == 0){
-					num_array[x][y] = -2;
+				bool search = true;
+				bool xLeft = true;
+				bool xRight = true;
+
+				int xLocOne = x;
+				int xLocTwo = x;
+				int yLoc = y;
+
+				while (search) {
+					while (xLeft) {
+						if (yLoc == 14) break;
+						int num_mines = find_mine_num(xLocOne, yLoc, bomb_array);
+						if (bomb_array[xLocOne][yLoc] == 1) break;
+						if (num_array[xLocOne][yLoc] != 0) break;
+						if (num_mines == 0){
+							num_array[xLocOne][yLoc] = -2;
+						}
+						else{
+							num_array[xLocOne][yLoc] = num_mines;
+						}
+						total_score++;
+						yLoc++;
+					}
+					yLoc = y - 1;
+					while (xLeft) {
+						if (yLoc == -1) break;
+						int num_mines = find_mine_num(xLocOne, yLoc, bomb_array);
+						if (bomb_array[xLocOne][yLoc] == 1) break;
+						if (num_array[xLocOne][yLoc] != 0) break;
+						if (num_mines == 0){
+							num_array[xLocOne][yLoc] = -2;
+						}
+						else{
+							num_array[xLocOne][yLoc] = num_mines;
+						}
+						total_score++;
+						yLoc--;
+					}
+					yLoc = y;
+					while (xRight) {
+						if (yLoc == 14) break;
+						int num_mines = find_mine_num(xLocTwo, yLoc, bomb_array);
+						if (bomb_array[xLocTwo][yLoc] == 1) break;
+						if (num_array[xLocTwo][yLoc] != 0) break;
+						if (num_mines == 0){
+							num_array[xLocTwo][yLoc] = -2;
+						}
+						else{
+							num_array[xLocTwo][yLoc] = num_mines;
+						}
+						total_score++;
+						yLoc++;
+					}
+					yLoc = y - 1;
+					while (xRight) {
+						if (yLoc == -1) break;
+						int num_mines = find_mine_num(xLocTwo, yLoc, bomb_array);
+						if (bomb_array[xLocTwo][yLoc] == 1) break;
+						if (num_array[xLocTwo][yLoc] != 0) break;
+						if (num_mines == 0){
+							num_array[xLocTwo][yLoc] = -2;
+						}
+						else{
+							num_array[xLocTwo][yLoc] = num_mines;
+						}
+						total_score++;
+						yLoc--;
+					}
+					yLoc = y;
+
+					xLocOne--;
+					xLocTwo++;
+					if (xLocOne <= -1) xLeft = false;
+					else if (bomb_array[xLocOne][yLoc] == 1) break;
+					if (xLocTwo >= 20) xRight = false;
+					else if (bomb_array[xLocTwo][yLoc] == 1) break;
 					
+					if (xLocOne <= -1 && xLocTwo >= 20) break;
 				}
-				else{
-					num_array[x][y] = num_mines;
-				}
-				total_score++;
 			}
 			
 		}
@@ -1490,7 +1571,7 @@ void draw_score(int imageX, int imageY, int number){
 	int y = imageY;
 
 	// eraser previous drawn scores
-	for (int i = x; i < x+100; i++){
+	for (int i = x; i < x+150; i++){
 		for (int j = y; j < y+10; j++){
 			plot_pixel(i, j, BLACK);
 		}
@@ -1544,16 +1625,24 @@ void draw_score(int imageX, int imageY, int number){
 	// drawing number score
 	int num = 0;
 	int num2 = 0;
+	int num3 = 0;
 	if (number <= 9){
 		num = 0;
-		num2 = number;
-	}else{
-		num = number / 10;
-		num2 = number % 10;
+		num2 = 0;
+		num3 = number;
+	}else if(number <= 99){
+		num = 0;
+		num2 = number / 10;
+		num3 = number % 10;
+	}else {
+		num = number / 100;
+		num2 = number % 100 / 10;
+		num3 = number % 100 % 10;
 	}
 
-	for(int i = 0; i < 2; i++){
-		if (num == 0){
+	int arr_num[3] = {num, num2, num3};
+	for(int i = 0; i < 3; i++){
+		if (arr_num[i] == 0){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
 			draw_horizontal_line(y+8, x+1, x+6, WHITE);
 
@@ -1561,11 +1650,11 @@ void draw_score(int imageX, int imageY, int number){
 			draw_vertical_line(x+5, y+1, y+8, WHITE);
 
 		}
-		else if (num == 1){
+		else if (arr_num[i] == 1){
 			draw_vertical_line(x+3, y+1, y+8, WHITE);
 
 		}
-		else if (num == 2){
+		else if (arr_num[i] == 2){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
 			draw_horizontal_line(y+4, x+1, x+6, WHITE);
 			draw_horizontal_line(y+8, x+1, x+6, WHITE);
@@ -1574,7 +1663,7 @@ void draw_score(int imageX, int imageY, int number){
 			draw_vertical_line(x+1, y+4, y+8, WHITE);
 
 		}
-		else if (num == 3){
+		else if (arr_num[i] == 3){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
 			draw_horizontal_line(y+4, x+1, x+6, WHITE);
 			draw_horizontal_line(y+8, x+1, x+6, WHITE);
@@ -1582,13 +1671,13 @@ void draw_score(int imageX, int imageY, int number){
 			draw_vertical_line(x+5, y+1, y+8, WHITE);
 
 		}
-		else if (num == 4){
+		else if (arr_num[i] == 4){
 			draw_line(x+1, y+4, x+2, y+1, WHITE);
 			draw_horizontal_line(y+4, x+1, x+6, WHITE);
 			draw_vertical_line(x+4, y+1, y+9, WHITE);
 
 		}
-		else if (num == 5){
+		else if (arr_num[i] == 5){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
 			draw_horizontal_line(y+4, x+1, x+6, WHITE);
 			draw_horizontal_line(y+8, x+1, x+6, WHITE);
@@ -1597,7 +1686,7 @@ void draw_score(int imageX, int imageY, int number){
 			draw_vertical_line(x+5, y+4, y+8, WHITE);
 
 		}
-		else if (num == 6){
+		else if (arr_num[i] == 6){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
 			draw_horizontal_line(y+4, x+1, x+6, WHITE);
 			draw_horizontal_line(y+8, x+1, x+6, WHITE);
@@ -1606,12 +1695,12 @@ void draw_score(int imageX, int imageY, int number){
 			draw_vertical_line(x+5, y+4, y+8, WHITE);
 			
 		}
-		else if (num == 7){
+		else if (arr_num[i] == 7){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
 			draw_line(x+4, y+9, x+5, y+1, WHITE);
 			
 		}
-		else if (num == 8){
+		else if (arr_num[i] == 8){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
 			draw_horizontal_line(y+4, x+1, x+6, WHITE);
 			draw_horizontal_line(y+8, x+1, x+6, WHITE);
@@ -1619,7 +1708,7 @@ void draw_score(int imageX, int imageY, int number){
 			draw_vertical_line(x+1, y+1, y+8, WHITE);
 			draw_vertical_line(x+5, y+1, y+8, WHITE);
 		}
-		else if (num == 9){
+		else if (arr_num[i] == 9){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
 			draw_horizontal_line(y+4, x+1, x+6, WHITE);
 			draw_horizontal_line(y+8, x+1, x+6, WHITE);
@@ -1627,7 +1716,6 @@ void draw_score(int imageX, int imageY, int number){
 			draw_vertical_line(x+1, y+1, y+5, WHITE);
 			draw_vertical_line(x+5, y+1, y+8, WHITE);
 		}
-		num = num2;
 		x = x + 8;
 	}
 
@@ -1653,7 +1741,7 @@ int find_mine_num(int square_index_x, int sqaure_index_y, int bomb_array[20][14]
 			}
 		}
 	}
-	printf("count = %d, end! \n", count);
+	// printf("count = %d, end! \n", count);
 	return count;
 }
 
