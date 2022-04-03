@@ -1719,8 +1719,12 @@ int main(void)
 
 					// Shifts The Two X Positions, Then Analyze If The Search Has Ended Or Not
 					yLoc = y;
-					if (num_array[xLocOne][yLoc] > 0) xLeft = false;
-					if (num_array[xLocTwo][yLoc] > 0) xRight = false;
+					if (xLocOne >= 0 && xLocOne < 20){
+						if (num_array[xLocOne][yLoc] > 0) xLeft = false;
+					}
+					if (xLocTwo >= 0 && xLocTwo < 20){
+						if (num_array[xLocTwo][yLoc] > 0) xRight = false;
+					}
 					xLocOne--;
 					xLocTwo++;
 					if (xLocOne <= -1) xLeft = false;
