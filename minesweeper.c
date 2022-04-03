@@ -135,7 +135,6 @@ void draw_rectangle(int x0, int y0, int x1, int y1, short int rectangle_color);
 void plot_pixel(int x, int y, short int pixel_color);
 
 void draw_game_frame();
-
 void config_GIC(void);
 
 // Utility functions
@@ -158,12 +157,12 @@ void display_ERROR_on_HEX();
 
 void clear_HEX_display();
 
-
+// Variable Declarations
 volatile int * pushButtons = (int * ) KEY_BASE;
 volatile int * SW = (int * ) SW_BASE;
 volatile int * PS2_ptr = (int * ) KEYBOARD_BASE;
 
-
+// Hexadecimal Pixel 2D Array Of Pictures
 const uint16_t empty_board[160][160] = {
 	{33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775,33775},
 	{33775,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,33775,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,33775,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,33775,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,33775,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,33775,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,33775,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,33775,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,33775,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,33775,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711,50711},
@@ -347,6 +346,7 @@ const uint16_t blank_square[15][15] = {
 
 };
 
+// Displaying Numbers For Surrounding Mines
 const uint16_t num0[15][15] = {
 	{33807,38001,38001,38001,38001,38001,38001,38001,38001,38001,38001,38001,38001,38001,33807},
 	{35920,52824,52792,52824,52824,52824,52824,52824,52824,52824,52824,52824,52792,52824,35920},
@@ -363,25 +363,6 @@ const uint16_t num0[15][15] = {
 	{35920,52792,50743,50743,50743,50743,50743,50743,50743,50743,50743,50743,50743,52792,35920},
 	{35888,48566,46517,46518,46518,46518,46518,46518,46518,46518,46518,46518,46517,48566,35888},
 	{33807,38001,38001,38001,38001,38001,38001,38001,38001,38001,38001,38001,38001,38001,33807},
-
-};
-
-const uint16_t mine[15][15] = {
-	{33808,35921,35921,35921,35921,35921,35921,35985,35921,35921,35921,35921,35921,35921,33808},
-	{35921,50744,50712,50712,50712,50712,48663,46486,48663,50712,50712,50712,50712,50744,35921},
-	{35921,50712,48631,50744,50712,50712,50776,8452,50776,50712,50712,50744,48631,50712,35921},
-	{35921,50712,50744,40179,44438,44405,38034,16872,35921,44373,44438,40179,50744,50712,35921},
-	{35921,50712,50712,44438,35953,0,0,0,0,6339,35921,44438,50712,50712,35921},
-	{35921,50712,50712,44405,0,48631,59228,12646,4226,0,6339,44373,50712,50712,35921},
-	{35921,48663,50776,38034,0,59228,65535,14823,0,10565,0,35921,50776,48663,35921},
-	{35985,46486,8452,16872,0,12646,14823,0,0,0,0,14823,8452,46486,35985},
-	{35921,48663,50776,35921,0,4226,0,0,0,8484,0,35921,50776,48663,35921},
-	{35921,50712,50712,44373,6339,0,10565,0,8484,0,6339,44373,50712,50712,35921},
-	{35921,50712,50712,44438,35921,6339,0,0,0,6339,35921,44438,50712,50712,35921},
-	{35921,50712,50744,40179,44438,44373,35921,14823,35921,44373,44438,40179,50744,50712,35921},
-	{35921,50712,48631,50744,50712,50712,50776,8452,50776,50712,50712,50744,48631,50712,35921},
-	{35921,50744,50712,50712,50712,50712,48663,46486,48663,50712,50712,50712,50712,50744,35921},
-	{33808,35921,35921,35921,35921,35921,35921,35985,35921,35921,35921,35921,35921,35921,33808},
 
 };
 
@@ -534,6 +515,25 @@ const uint16_t num8[15][15] = {
 	{35921,50712,48631,50712,50744,50744,50744,50744,50744,50744,50712,48631,48631,50712,35921},
 	{35921,50744,50712,50712,50712,50712,50712,50712,50712,50712,50712,50712,50712,50744,35921},
 	{33808,35921,35921,35921,35921,35921,35921,35921,35921,35921,35921,35921,35921,35921,33808},
+
+};
+
+const uint16_t mine[15][15] = {
+	{33808,35921,35921,35921,35921,35921,35921,35985,35921,35921,35921,35921,35921,35921,33808},
+	{35921,50744,50712,50712,50712,50712,48663,46486,48663,50712,50712,50712,50712,50744,35921},
+	{35921,50712,48631,50744,50712,50712,50776,8452,50776,50712,50712,50744,48631,50712,35921},
+	{35921,50712,50744,40179,44438,44405,38034,16872,35921,44373,44438,40179,50744,50712,35921},
+	{35921,50712,50712,44438,35953,0,0,0,0,6339,35921,44438,50712,50712,35921},
+	{35921,50712,50712,44405,0,48631,59228,12646,4226,0,6339,44373,50712,50712,35921},
+	{35921,48663,50776,38034,0,59228,65535,14823,0,10565,0,35921,50776,48663,35921},
+	{35985,46486,8452,16872,0,12646,14823,0,0,0,0,14823,8452,46486,35985},
+	{35921,48663,50776,35921,0,4226,0,0,0,8484,0,35921,50776,48663,35921},
+	{35921,50712,50712,44373,6339,0,10565,0,8484,0,6339,44373,50712,50712,35921},
+	{35921,50712,50712,44438,35921,6339,0,0,0,6339,35921,44438,50712,50712,35921},
+	{35921,50712,50744,40179,44438,44373,35921,14823,35921,44373,44438,40179,50744,50712,35921},
+	{35921,50712,48631,50744,50712,50712,50776,8452,50776,50712,50712,50744,48631,50712,35921},
+	{35921,50744,50712,50712,50712,50712,48663,46486,48663,50712,50712,50712,50712,50744,35921},
+	{33808,35921,35921,35921,35921,35921,35921,35985,35921,35921,35921,35921,35921,35921,33808},
 
 };
 
@@ -1024,11 +1024,8 @@ const uint16_t start_screen[220][220] = {
 };
 
 // Data Structure Declaration
-
 int main(void)
 {
-    // Variable Declaration For Time Keeping
-
     // Variable Declaration
     // srand(time(NULL));
 
@@ -1050,11 +1047,10 @@ int main(void)
     pixel_buffer_start = *(pixel_ctrl_ptr + 1); // we draw on the back buffer
                                 	// pixel_buffer_start points to the pixel buffer
 	
-
+	// Clearing The Hexadecimal Display
 	clear_HEX_display();
 
-	// start game screen 
-	
+	// Start Game Screen 
 	bool start_game = false;
 	bool SPACE_pressed = false, ENTER_pressed = false;
 	bool lose = false;
@@ -1070,9 +1066,11 @@ int main(void)
 
 	draw_image(50, 10, 220, 220, start_screen);
 
+	// Displaying Using The Pixel Buffer
 	wait_for_vsync();                           // swap front and back buffers on VGA vertical sync
     pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
 
+	// Waiting For The Game To Start
 	while(start_game == false){
 		PS2_data = *(PS2_ptr);
 		RVALID = (PS2_data & 0x8000);
@@ -1105,41 +1103,28 @@ int main(void)
 	int x = 0;
 	int y = 0;
 
-	bomb_array[5][5] = 1;
-	// bomb_array[1][1] = 1;
-	// bomb_array[7][11] = 1;
-	// bomb_array[3][8] = 1;
-	// bomb_array[6][2] = 1;
-	// bomb_array[2][0] = 1;
-	// bomb_array[3][1] = 1;
-	// bomb_array[6][6] = 1;
+	// Initialize All Mines
+	for(int col = 0; col < 20; col++){
+		for (int row = 0; row < 14; row++){
+			// one mine every 8 squares
+			// rand in a range of 1 ~ 8
+			int value = rand() % 8 + 1;
+			if (value == 1){
+				bomb_array[col][row] = 1;
+			}else{
+				bomb_array[col][row] = 0;
+			}
+		}
+	}
 
-
-	// Initialize mines
-	// for(int i = 0; i < 20; i++){
-	// 	for (int j = 0; j < 14; j++){
-	// 		// one mine every 8 squares
-	// 		// rand in a range of 1 ~ 8
-	// 		int value = rand() % 8 + 1;
-	// 		if (value == 1){
-	// 			bomb_array[i][j] = 1;
-	// 		}else{
-	// 			bomb_array[i][j] = 0;
-	// 		}
-	// 		// printf("%d ", bomb_array[i][j]);
-	// 	}
-	// 	// printf("\n");
-	// }
-
-	// drawing game board 20 by 14
+	// Drawing Game board 20 by 14
 	draw_game_board(num_array);
 
+	// Drawing The Current Score
 	draw_score(10, 10, total_score);
 
-
-    while (1)
-    {
-
+	// Game Loop
+    while (1){
 		while (lose == true){
 			wait_for_vsync();                           // swap front and back buffers on VGA vertical sync
         	pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
@@ -1151,22 +1136,23 @@ int main(void)
 			clear_screen();
 			draw_image(50, 10, 220, 220, gameOver);
 		}
-
+		
+		// Drawing Game board 20 by 14
 		if (lose == false){
 			wait_for_vsync();                           // swap front and back buffers on VGA vertical sync
         	pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
-			//drawing game board 20 by 14
 			draw_game_board(num_array);
 		}
 		
-
+		// Drawing The Current Score
 		draw_score(10, 10, total_score);
+		draw_mines(bomb_array);
 
-		
-
+		// Reading Information From PS2 Keyboard Input
 		PS2_data = *(PS2_ptr);
 		RVALID = (PS2_data & 0x8000);
 
+		// Analyzing Keyboard Input
 		if(RVALID != 0){ 
 			clear_HEX_display();
 			/* always save the last three bytes received */
@@ -1183,6 +1169,7 @@ int main(void)
 		// Display last byte on Red LEDs
 		*RLEDs = byte3;
 
+		// Analyzing Keyboard Input
 		if (byte3 == KEY_0){
 			if(confirm_digit1 == false){
 				digit1 = 0;
@@ -1268,7 +1255,7 @@ int main(void)
 			printf("SPACE_pressed=true	");
 		}
 
-		if (SPACE_pressed==true && byte3 == ENTER){
+		if (SPACE_pressed == true && byte3 == ENTER){
 			ENTER_pressed = true;
 			confirm_digit1 = false;
 			y = digit1 * 10 + digit2;
@@ -1279,20 +1266,22 @@ int main(void)
 			}
 		}
 
-
 		printf("(x=%d,y=%d)		", x, y);
 
 
-		if (SPACE_pressed==true && ENTER_pressed==true){
+		if (SPACE_pressed == true && ENTER_pressed == true){
 			SPACE_pressed = false;
 			ENTER_pressed = false;
 			printf("(x=%d,y=%d)		", x, y);
+			
+			// If The Place Is A Boob, Game Is Over
 			if (bomb_array[x][y] == 1){
 				num_array[x][y] = -1;
 				lose = true;
 				printf("\nLOSE\n");
-			}
-			else{
+			// Otherwise Analyze Surrounding Environment
+			} else {
+				// Variable Declaration
 				bool search = true;
 				bool xLeft = true;
 				bool xRight = true;
@@ -1302,81 +1291,445 @@ int main(void)
 				int yLoc = y;
 
 				while (search) {
+					// xLeft Does Toward The Left Side
+					// This Loop Analyze Downward
+					//if (num_array[x][y] > 0) break;
+					yLoc = y;
 					while (xLeft) {
 						if (yLoc == 14) break;
 						int num_mines = find_mine_num(xLocOne, yLoc, bomb_array);
 						if (bomb_array[xLocOne][yLoc] == 1) break;
-						if (num_array[xLocOne][yLoc] != 0) break;
+						if (num_array[xLocOne][yLoc] > 0) break;
+						if (num_array[xLocOne][yLoc] == 0) total_score++;
 						if (num_mines == 0){
 							num_array[xLocOne][yLoc] = -2;
-						}
-						else{
+							int tempX = xLocOne;
+							while (tempX != -1){
+								int num_mines = find_mine_num(tempX, yLoc, bomb_array);
+								if (bomb_array[tempX][yLoc] == 1) break;
+								if (num_array[tempX][yLoc] > 0) break;
+								if (num_array[tempX][yLoc] == 0) total_score++;
+								if (num_mines == 0){
+									num_array[tempX][yLoc] = -2;
+								} else {
+									num_array[tempX][yLoc] = num_mines;
+									if (num_array[tempX][yLoc] == 0) total_score++;
+									break;
+								}
+
+								int tempY = yLoc;
+								while (tempY != -1){
+									int num_mines = find_mine_num(tempX, tempY, bomb_array);
+									if (bomb_array[tempX][tempY] == 1) break;
+									if (num_array[tempX][tempY] > 0) break;
+									if (num_array[tempX][tempY] == 0) total_score++;
+									if (num_mines == 0){
+										num_array[tempX][tempY] = -2;
+									} else {
+										num_array[tempX][tempY] = num_mines;
+										break;
+									}
+									tempY--;
+								}
+								tempY = yLoc;
+								while (tempY != 14){
+									int num_mines = find_mine_num(tempX, tempY, bomb_array);
+									if (bomb_array[tempX][tempY] == 1) break;
+									if (num_array[tempX][tempY] > 0) break;
+									if (num_array[tempX][tempY] == 0) total_score++;
+									if (num_mines == 0){
+										num_array[tempX][tempY] = -2;
+									} else {
+										num_array[tempX][tempY] = num_mines;
+										break;
+									}
+									tempY++;
+								}
+
+								tempX--;
+							}
+							tempX = xLocOne;
+							while (tempX != 20){
+								int num_mines = find_mine_num(tempX, yLoc, bomb_array);
+								if (bomb_array[tempX][yLoc] == 1) break;
+								if (num_array[tempX][yLoc] > 0) break;
+								if (num_array[tempX][yLoc] == 0) total_score++;
+								if (num_mines == 0){
+									num_array[tempX][yLoc] = -2;
+								} else {
+									num_array[tempX][yLoc] = num_mines;
+									break;
+								}
+
+								int tempY = yLoc;
+								while (tempY != -1){
+									int num_mines = find_mine_num(tempX, tempY, bomb_array);
+									if (bomb_array[tempX][tempY] == 1) break;
+									if (num_array[tempX][tempY] > 0) break;
+									if (num_array[tempX][tempY] == 0) total_score++;
+									if (num_mines == 0){
+										num_array[tempX][tempY] = -2;
+									} else {
+										num_array[tempX][tempY] = num_mines;
+										break;
+									}
+									tempY--;
+								}
+								tempY = yLoc;
+								while (tempY != 14){
+									int num_mines = find_mine_num(tempX, tempY, bomb_array);
+									if (bomb_array[tempX][tempY] == 1) break;
+									if (num_array[tempX][tempY] > 0) break;
+									if (num_array[tempX][tempY] == 0) total_score++;
+									if (num_mines == 0){
+										num_array[tempX][tempY] = -2;
+									} else {
+										num_array[tempX][tempY] = num_mines;
+										break;
+									}
+									tempY++;
+								}
+								tempX++;
+							}
+						} else {
 							num_array[xLocOne][yLoc] = num_mines;
+							break;
 						}
-						total_score++;
 						yLoc++;
 					}
+					
+					// Reset yLoc then Analyze Upward
 					yLoc = y - 1;
 					while (xLeft) {
 						if (yLoc == -1) break;
 						int num_mines = find_mine_num(xLocOne, yLoc, bomb_array);
 						if (bomb_array[xLocOne][yLoc] == 1) break;
-						if (num_array[xLocOne][yLoc] != 0) break;
+						if (num_array[xLocOne][yLoc] > 0) break;
+						if (num_array[xLocOne][yLoc] == 0) total_score++;
 						if (num_mines == 0){
 							num_array[xLocOne][yLoc] = -2;
-						}
-						else{
+							int tempX = xLocOne;
+							while (tempX != -1){
+								int num_mines = find_mine_num(tempX, yLoc, bomb_array);
+								if (bomb_array[tempX][yLoc] == 1) break;
+								if (num_array[tempX][yLoc] > 0) break;
+								if (num_array[tempX][yLoc] == 0) total_score++;
+								if (num_mines == 0){
+									num_array[tempX][yLoc] = -2;
+								} else {
+									num_array[tempX][yLoc] = num_mines;
+									break;
+								}
+
+								int tempY = yLoc;
+								while (tempY != -1){
+									int num_mines = find_mine_num(tempX, tempY, bomb_array);
+									if (bomb_array[tempX][tempY] == 1) break;
+									if (num_array[tempX][tempY] > 0) break;
+									if (num_array[tempX][tempY] == 0) total_score++;
+									if (num_mines == 0){
+										num_array[tempX][tempY] = -2;
+									} else {
+										num_array[tempX][tempY] = num_mines;
+										break;
+									}
+									tempY--;
+								}
+
+								tempY = yLoc;
+								while (tempY != 14){
+									int num_mines = find_mine_num(tempX, tempY, bomb_array);
+									if (bomb_array[tempX][tempY] == 1) break;
+									if (num_array[tempX][tempY] > 0) break;
+									if (num_array[tempX][tempY] == 0) total_score++;
+									if (num_mines == 0){
+										num_array[tempX][tempY] = -2;
+									} else {
+										num_array[tempX][tempY] = num_mines;
+										break;
+									}
+									tempY++;
+								}
+								tempX--;
+							}
+
+							tempX = xLocOne;
+							while (tempX != 20){
+								int num_mines = find_mine_num(tempX, yLoc, bomb_array);
+								if (bomb_array[tempX][yLoc] == 1) break;
+								if (num_array[tempX][yLoc] > 0) break;
+								if (num_array[tempX][yLoc] == 0) total_score++;
+								if (num_mines == 0){
+									num_array[tempX][yLoc] = -2;
+								} else {
+									num_array[tempX][yLoc] = num_mines;
+									break;
+								}
+
+								int tempY = yLoc;
+								while (tempY != -1){
+									int num_mines = find_mine_num(tempX, tempY, bomb_array);
+									if (bomb_array[tempX][tempY] == 1) break;
+									if (num_array[tempX][tempY] > 0) break;
+									if (num_array[tempX][tempY] == 0) total_score++;
+									if (num_mines == 0){
+										num_array[tempX][tempY] = -2;
+									} else {
+										num_array[tempX][tempY] = num_mines;
+										break;
+									}
+									tempY--;
+								}
+
+								tempY = yLoc;
+								while (tempY != 14){
+									int num_mines = find_mine_num(tempX, tempY, bomb_array);
+									if (bomb_array[tempX][tempY] == 1) break;
+									if (num_array[tempX][tempY] > 0) break;
+									if (num_array[tempX][tempY] == 0) total_score++;
+									if (num_mines == 0){
+										num_array[tempX][tempY] = -2;
+									} else {
+										num_array[tempX][tempY] = num_mines;
+										break;
+									}
+									tempY++;
+								}
+								tempX++;
+							}
+						} else {
 							num_array[xLocOne][yLoc] = num_mines;
+							break;
 						}
-						total_score++;
 						yLoc--;
 					}
+					
+					// xRight Does Toward The Right Side
+					// This Loop Analyze Downward
 					yLoc = y;
 					while (xRight) {
 						if (yLoc == 14) break;
 						int num_mines = find_mine_num(xLocTwo, yLoc, bomb_array);
 						if (bomb_array[xLocTwo][yLoc] == 1) break;
-						if (num_array[xLocTwo][yLoc] != 0) break;
+						if (num_array[xLocTwo][yLoc] > 0) break;
+						if (num_array[xLocTwo][yLoc] == 0) total_score++;
 						if (num_mines == 0){
 							num_array[xLocTwo][yLoc] = -2;
-						}
-						else{
+							int tempX = xLocTwo;
+							while (tempX != -1){
+								int num_mines = find_mine_num(tempX, yLoc, bomb_array);
+								if (bomb_array[tempX][yLoc] == 1) break;
+								if (num_array[tempX][yLoc] > 0) break;
+								if (num_array[tempX][yLoc] == 0) total_score++;
+								if (num_mines == 0){
+									num_array[tempX][yLoc] = -2;
+								} else {
+									num_array[tempX][yLoc] = num_mines;
+									break;
+								}
+
+								int tempY = yLoc;
+								while (tempY != -1){
+									int num_mines = find_mine_num(tempX, tempY, bomb_array);
+									if (bomb_array[tempX][tempY] == 1) break;
+									if (num_array[tempX][tempY] > 0) break;
+									if (num_array[tempX][tempY] == 0) total_score++;
+									if (num_mines == 0){
+										num_array[tempX][tempY] = -2;
+									} else {
+										num_array[tempX][tempY] = num_mines;
+										break;
+									}
+									tempY--;
+								}
+								tempY = yLoc;
+								while (tempY != 14){
+									int num_mines = find_mine_num(tempX, tempY, bomb_array);
+									if (bomb_array[tempX][tempY] == 1) break;
+									if (num_array[tempX][tempY] > 0) break;
+									if (num_array[tempX][tempY] == 0) total_score++;
+									if (num_mines == 0){
+										num_array[tempX][tempY] = -2;
+									} else {
+										num_array[tempX][tempY] = num_mines;
+										break;
+									}
+									tempY++;
+								}
+
+								tempX--;
+							}
+							tempX = xLocTwo;
+							while (tempX != 20){
+								int num_mines = find_mine_num(tempX, yLoc, bomb_array);
+								if (bomb_array[tempX][yLoc] == 1) break;
+								if (num_array[tempX][yLoc] > 0) break;
+								if (num_array[tempX][yLoc] == 0) total_score++;
+								if (num_mines == 0){
+									num_array[tempX][yLoc] = -2;
+								} else {
+									num_array[tempX][yLoc] = num_mines;
+									break;
+								}
+
+								int tempY = yLoc;
+								while (tempY != -1){
+									int num_mines = find_mine_num(tempX, tempY, bomb_array);
+									if (bomb_array[tempX][tempY] == 1) break;
+									if (num_array[tempX][tempY] > 0) break;
+									if (num_array[tempX][tempY] == 0) total_score++;
+									if (num_mines == 0){
+										num_array[tempX][tempY] = -2;
+									} else {
+										num_array[tempX][tempY] = num_mines;
+										break;
+									}
+									tempY--;
+								}
+								tempY = yLoc;
+								while (tempY != 14){
+									int num_mines = find_mine_num(tempX, tempY, bomb_array);
+									if (bomb_array[tempX][tempY] == 1) break;
+									if (num_array[tempX][tempY] > 0) break;
+									if (num_array[tempX][tempY] == 0) total_score++;
+									if (num_mines == 0){
+										num_array[tempX][tempY] = -2;
+									} else {
+										num_array[tempX][tempY] = num_mines;
+										break;
+									}
+									tempY++;
+								}
+								tempX++;
+							}
+						} else {
 							num_array[xLocTwo][yLoc] = num_mines;
+							break;
 						}
-						total_score++;
 						yLoc++;
 					}
+
+					// Reset yLoc then Analyze Upward
 					yLoc = y - 1;
 					while (xRight) {
 						if (yLoc == -1) break;
 						int num_mines = find_mine_num(xLocTwo, yLoc, bomb_array);
 						if (bomb_array[xLocTwo][yLoc] == 1) break;
-						if (num_array[xLocTwo][yLoc] != 0) break;
+						if (num_array[xLocTwo][yLoc] > 0) break;
+						if (num_array[xLocTwo][yLoc] == 0) total_score++;
 						if (num_mines == 0){
 							num_array[xLocTwo][yLoc] = -2;
-						}
-						else{
+							int tempX = xLocTwo;
+							while (tempX != -1){
+								int num_mines = find_mine_num(tempX, yLoc, bomb_array);
+								if (bomb_array[tempX][yLoc] == 1) break;
+								if (num_array[tempX][yLoc] > 0) break;
+								if (num_array[tempX][yLoc] == 0) total_score++;
+								if (num_mines == 0){
+									num_array[tempX][yLoc] = -2;
+								} else {
+									num_array[tempX][yLoc] = num_mines;
+									break;
+								}
+
+								int tempY = yLoc;
+								while (tempY != -1){
+									int num_mines = find_mine_num(tempX, tempY, bomb_array);
+									if (bomb_array[tempX][tempY] == 1) break;
+									if (num_array[tempX][tempY] > 0) break;
+									if (num_array[tempX][tempY] == 0) total_score++;
+									if (num_mines == 0){
+										num_array[tempX][tempY] = -2;
+									} else {
+										num_array[tempX][tempY] = num_mines;
+										break;
+									}
+									tempY--;
+								}
+
+								tempY = yLoc;
+								while (tempY != 14){
+									int num_mines = find_mine_num(tempX, tempY, bomb_array);
+									if (bomb_array[tempX][tempY] == 1) break;
+									if (num_array[tempX][tempY] > 0) break;
+									if (num_array[tempX][tempY] == 0) total_score++;
+									if (num_mines == 0){
+										num_array[tempX][tempY] = -2;
+									} else {
+										num_array[tempX][tempY] = num_mines;
+										break;
+									}
+									tempY++;
+								}
+								tempX--;
+							}
+
+							tempX = xLocTwo;
+							while (tempX != 20){
+								int num_mines = find_mine_num(tempX, yLoc, bomb_array);
+								if (bomb_array[tempX][yLoc] == 1) break;
+								if (num_array[tempX][yLoc] > 0) break;
+								if (num_array[tempX][yLoc] == 0) total_score++;
+								if (num_mines == 0){
+									num_array[tempX][yLoc] = -2;
+								} else {
+									num_array[tempX][yLoc] = num_mines;
+									break;
+								}
+								
+								int tempY = yLoc;
+								while (tempY != -1){
+									int num_mines = find_mine_num(tempX, tempY, bomb_array);
+									if (bomb_array[tempX][tempY] == 1) break;
+									if (num_array[tempX][tempY] > 0) break;
+									if (num_array[tempX][tempY] == 0) total_score++;
+									if (num_mines == 0){
+										num_array[tempX][tempY] = -2;
+									} else {
+										num_array[tempX][tempY] = num_mines;
+										break;
+									}
+									tempY--;
+								}
+
+								tempY = yLoc;
+								while (tempY != 14){
+									int num_mines = find_mine_num(tempX, tempY, bomb_array);
+									if (bomb_array[tempX][tempY] == 1) break;
+									if (num_array[tempX][tempY] > 0) break;
+									if (num_array[tempX][tempY] == 0) total_score++;
+									if (num_mines == 0){
+										num_array[tempX][tempY] = -2;
+									} else {
+										num_array[tempX][tempY] = num_mines;
+										break;
+									}
+									tempY++;
+								}
+								tempX++;
+							}
+						} else {
 							num_array[xLocTwo][yLoc] = num_mines;
+							break;
 						}
-						total_score++;
 						yLoc--;
 					}
 					yLoc = y;
 
+
+					// Shifts The Two X Positions, Then Analyze If The Search Has Ended Or Not
+					yLoc = y;
+					if (num_array[xLocOne][yLoc] > 0) xLeft = false;
+					if (num_array[xLocTwo][yLoc] > 0) xRight = false;
 					xLocOne--;
 					xLocTwo++;
 					if (xLocOne <= -1) xLeft = false;
-					else if (bomb_array[xLocOne][yLoc] == 1) break;
 					if (xLocTwo >= 20) xRight = false;
-					else if (bomb_array[xLocTwo][yLoc] == 1) break;
-					
+
 					if (xLocOne <= -1 && xLocTwo >= 20) break;
 				}
 			}
-			
 		}
-
-
     }
 }
 
@@ -1540,6 +1893,7 @@ void config_GIC(void)
     *((int *)address) = ENABLE;
 }
 
+// Draw The Image
 void draw_image(int imageX, int imageY, int row, int col, const uint16_t numberArray[row][col])
 {
     int x = imageX;
@@ -1557,15 +1911,17 @@ void draw_image(int imageX, int imageY, int row, int col, const uint16_t numberA
     }
 }
 
+// Funciton To Draw A Vertical Line
 void draw_vertical_line(int x, int y_start, int y_end, short int color){
 	draw_line(x, y_start, x, y_end, color);
 }
 
+// Function To Draw A Horizontal Line
 void draw_horizontal_line(int y, int x_start, int x_end, short int color){
 	draw_line(x_start, y, x_end, y, color);
 }
 
-
+// Draw The Current Score On The Top
 void draw_score(int imageX, int imageY, int number){
 	int x = imageX;
 	int y = imageY;
@@ -1721,7 +2077,7 @@ void draw_score(int imageX, int imageY, int number){
 
 }
 
-// return the number of mines around the nearest 8 grids of (x, y)
+// Return the number of mines around the nearest 8 grids of (x, y)
 int find_mine_num(int square_index_x, int sqaure_index_y, int bomb_array[20][14]){
 	int count = 0;
 	int x_index = square_index_x;
@@ -1745,7 +2101,7 @@ int find_mine_num(int square_index_x, int sqaure_index_y, int bomb_array[20][14]
 	return count;
 }
 
-// draw game board
+// Draw Game Board
 void draw_game_board(int num_array[20][14]){
 	// drawing game board 20 by 14
 	for(int i = 0; i < 20; ++i){
@@ -1794,6 +2150,7 @@ void draw_game_board(int num_array[20][14]){
 	}
 }
 
+// Draw All The Mines
 void draw_mines(int bomb_array[20][14]){
 	for(int i = 0; i < 20; ++i){
 		for(int j = 0; j < 14; ++j){
@@ -1811,13 +2168,13 @@ void draw_mines(int bomb_array[20][14]){
 
 }
 
-
-
+// Display ERROR On The Hexadecimal Displays
 void display_ERROR_on_HEX(){
 	*ADDR_7SEG1 = 0x33333F33;
 	*ADDR_7SEG2 = 0x79;
 }
 
+// Clear The Hexadecimal Displays
 void clear_HEX_display(){
 	*ADDR_7SEG1 = 0x0;
 	*ADDR_7SEG2 = 0x0;
