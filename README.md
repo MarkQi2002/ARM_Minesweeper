@@ -1,7 +1,7 @@
 # ARM_Minesweeper
 ECE 243 Final Course Project <br />
 Created By: Mark Qi and Zihui Lu <br />
-Professor: Jonathan Rose
+Professor: Jonathan Rose <br />
 
 ## Game Description
 - Minesweeper is a singl-player puzzle video game. The objective is to clear a rectangular board containing hidden "mines" without detonating any of them. The player will gain hint regarding the location of the mines from the number of neighbouring mines in each field. <br />
