@@ -1115,7 +1115,7 @@ int main(void)
 			int value = rand() % 8 + 1;
 			if (value == 1){
 				bomb_array[col][row] = 1;
-			}else{
+			} else {
 				bomb_array[col][row] = 0;
 			}
 		}
@@ -1139,6 +1139,47 @@ int main(void)
         	pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
 			clear_screen();
 			draw_image(50, 10, 220, 220, gameOver);
+
+			// If The Player Uses The SW The Game Continues
+			if (*SW != 0) {
+				lose = false;
+				total_score = 0;
+				clear_screen();
+
+				// Reset Variables
+				x = 0;
+				y = 0;
+
+				// Reset The Board Array
+				for (int row = 0; row < 14; row++){
+					for (int col = 0; col < 20; col++){
+						bomb_array[col][row] = 0;
+						num_array[col][row] = 0;
+					}
+				}
+
+				// Reinitialize All Mines
+				for(int col = 0; col < 20; col++){
+					for (int row = 0; row < 14; row++){
+						// one mine every 8 squares
+						// rand in a range of 1 ~ 8
+						int value = rand() % 8 + 1;
+						if (value == 1){
+							bomb_array[col][row] = 1;
+						} else {
+							bomb_array[col][row] = 0;
+						}
+					}
+				}
+
+				// Drawing Game board 20 by 14
+				draw_game_board(num_array);
+
+				// Drawing The Current Score
+				draw_score(10, 10, total_score);
+				
+				break;
+			}
 		}
 		
 		// Drawing Game board 20 by 14
@@ -1150,6 +1191,8 @@ int main(void)
 		
 		// Drawing The Current Score
 		draw_score(10, 10, total_score);
+		
+		// TESTING USE ONLY
 		draw_mines(bomb_array);
 
 		// Reading Information From PS2 Keyboard Input
@@ -1291,7 +1334,7 @@ int main(void)
 		}
     }
 }
-
+// ----------------------------------------------------------------------------------Searching Algorithm---------------------------------------------------------------------
 // Recursive Search
 void search(int col, int row){
 	if (col >= 20 || col < 0) return;
@@ -1319,7 +1362,7 @@ void search(int col, int row){
 	search(col + 1, row + 1);
 }
 
-
+// ----------------------------------------------------------------------------------Drawing Functions-----------------------------------------------------------------------
 // Function For Waiting Vertical Sychronization
 void wait_for_vsync()
 {
@@ -1448,6 +1491,7 @@ void draw_game_frame()
     draw_rectangle(GAME_FRAME_RIGHT_X - GAME_FRAME_WIDTH, GAME_FRAME_UPPER_Y + GAME_FRAME_WIDTH, GAME_FRAME_RIGHT_X, GAME_FRAME_BOTTOM_Y - GAME_FRAME_WIDTH, GREY);
 }
 
+// -----------------------------------------------------------------------------------Interrupt Initialization--------------------------------------------------------------
 // Turn On Interrupts in the ARM processor
 void enable_A9_interrupts(void)
 {
@@ -1480,6 +1524,7 @@ void config_GIC(void)
     *((int *)address) = ENABLE;
 }
 
+// -----------------------------------------------------------------------------------More Drawing Functions------------------------------------------------------------------
 // Draw The Image
 void draw_image(int imageX, int imageY, int row, int col, const uint16_t numberArray[row][col])
 {
@@ -1664,6 +1709,7 @@ void draw_score(int imageX, int imageY, int number){
 
 }
 
+// ------------------------------------------------------------------------------------Game Mechanic Related Functions---------------------------------------------------------
 // Return the number of mines around the nearest 8 grids of (x, y)
 int find_mine_num(int square_index_x, int sqaure_index_y, int bomb_array[20][14]){
 	int count = 0;
