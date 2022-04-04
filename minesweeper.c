@@ -159,6 +159,8 @@ void clear_HEX_display();
 
 void search(int col, int row);
 
+bool check_win();
+
 // Variable Declarations
 volatile int * pushButtons = (int * ) KEY_BASE;
 volatile int * SW = (int * ) SW_BASE;
@@ -349,6 +351,24 @@ const uint16_t blank_square[15][15] = {
 };
 
 // Displaying Numbers For Surrounding Mines
+const uint16_t flag[15][15] = {
+	{65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,65535,52825},
+	{65535,63422,59196,59196,59196,59196,59196,59228,59261,59196,59196,59196,61277,50776,31727},
+	{65535,59164,48599,48631,48599,48663,48728,50484,52402,48631,48631,48631,50712,40147,31695},
+	{65535,59164,48631,48696,50776,52565,56140,59554,57702,50679,48663,48631,50744,40211,31695},
+	{65535,59164,48631,52596,56075,59619,61440,63488,57701,50679,48664,48631,50744,40211,31695},
+	{65535,59164,48631,52532,55848,59425,61440,63488,57701,50679,48664,48631,50712,40179,31695},
+	{65535,59164,48631,50744,50712,52467,55946,61505,59782,50679,48663,48631,50712,40179,31695},
+	{65535,59164,48599,50679,48631,48664,52857,43885,31078,48631,50679,48631,50744,40179,31695},
+	{65535,59164,48631,48663,48631,48631,52825,31760,8517,48631,48631,48631,50712,40179,31695},
+	{65535,59196,48599,48664,52889,33872,12678,10565,4226,12710,40179,52857,50712,40179,31695},
+	{65535,59164,48631,44373,19049,6371,0,0,0,0,8484,21162,48631,42260,31695},
+	{65535,57115,50712,40179,12710,14791,14856,14856,14856,16904,12710,14791,46518,42260,31695},
+	{65535,59196,48663,50744,50776,50776,50744,50744,50744,50744,50744,50744,52825,42260,31695},
+	{65535,50744,40179,42292,42260,42260,42260,42260,42260,42260,42260,42260,42292,38034,31727},
+	{52825,31727,31695,31727,31727,31727,31727,31727,31727,31727,31727,31727,31695,31727,33808},
+};
+
 const uint16_t num0[15][15] = {
 	{33807,38001,38001,38001,38001,38001,38001,38001,38001,38001,38001,38001,38001,38001,33807},
 	{35920,52824,52792,52824,52824,52824,52824,52824,52824,52824,52824,52824,52792,52824,35920},
@@ -1061,6 +1081,7 @@ int main(void)
 	bool start_game = false;
 	bool SPACE_pressed = false, ENTER_pressed = false;
 	bool lose = false;
+	bool win = false;
 	unsigned char byte1 = 0;
 	unsigned char byte2 = 0;
 	unsigned char byte3 = 0;
@@ -1154,7 +1175,7 @@ int main(void)
 				for (int row = 0; row < 14; row++){
 					for (int col = 0; col < 20; col++){
 						bomb_array[col][row] = 0;
-						num_array[col][row] = 0;
+						num_array[col][row] = -3;
 					}
 				}
 
@@ -1193,7 +1214,7 @@ int main(void)
 		draw_score(10, 10, total_score);
 		
 		// TESTING USE ONLY
-		draw_mines(bomb_array);
+		//draw_mines(bomb_array);
 
 		// Reading Information From PS2 Keyboard Input
 		PS2_data = *(PS2_ptr);
@@ -1220,64 +1241,55 @@ int main(void)
 		if (byte3 == KEY_0){
 			if(confirm_digit1 == false){
 				digit1 = 0;
-			}
-			if(confirm_digit1 == true){
+			} else if(confirm_digit1 == true){
 				digit2 = 0;
 			}
-		}
-		else if (byte3 == KEY_1){
+		} else if (byte3 == KEY_1) {
 			if(confirm_digit1 == false){
 				digit1 = 1;
-			}if(confirm_digit1 == true){
+			} else if(confirm_digit1 == true){
 				digit2 = 1;
 			}
-		}
-		else if (byte3 == KEY_2){
+		} else if (byte3 == KEY_2) {
 			if(confirm_digit1 == false){
 				digit1 = 2;
-			}if(confirm_digit1 == true){
+			} else if(confirm_digit1 == true){
 				digit2 = 2;
 			}
-		}
-		else if (byte3 == KEY_3){
+		} else if (byte3 == KEY_3) {
 			if(confirm_digit1 == false){
 				digit1 = 3;
-			}if(confirm_digit1 == true){
+			} else if(confirm_digit1 == true){
 				digit2 = 3;
 			}
-		}
-		else if (byte3 == KEY_4){
+		} else if (byte3 == KEY_4) {
 			if(confirm_digit1 == false){
 				digit1 = 4;
-			}if(confirm_digit1 == true){
+			} else if(confirm_digit1 == true){
 				digit2 = 4;
 			}
-		}
-		else if (byte3 == KEY_5){
+		} else if (byte3 == KEY_5) {
 			if(confirm_digit1 == false){
 				digit1 = 5;
-			}if(confirm_digit1 == true){
+			} else if(confirm_digit1 == true){
 				digit2 = 5;
 			}
-		}
-		else if (byte3 == KEY_6){
+		} else if (byte3 == KEY_6) {
 			if(confirm_digit1 == false){
 				digit1 = 6;
-			}if(confirm_digit1 == true){
+			} else if(confirm_digit1 == true){
 				digit2 = 6;
 			}
-		}
-		else if (byte3 == KEY_7){
+		} else if (byte3 == KEY_7) {
 			if(confirm_digit1 == false){
 				digit1 = 7;
-			}if(confirm_digit1 == true){
+			} else if(confirm_digit1 == true){
 				digit2 = 7;
 			}
-		}
-		else if (byte3 == KEY_8){
+		} else if (byte3 == KEY_8) {
 			if(confirm_digit1 == false){
 				digit1 = 8;
-			}if(confirm_digit1 == true){
+			} else if(confirm_digit1 == true){
 				digit2 = 8;
 			}
 		}
@@ -1286,6 +1298,7 @@ int main(void)
 		printf("(x=%d,y=%d)		", x, y);
 		printf("byte3=%d	", byte3);
 
+		// Analyzing Interval Input
 		if (byte3 == KEY_c){
 			confirm_digit1 = true;
 		}
@@ -1315,7 +1328,7 @@ int main(void)
 
 		printf("(x=%d,y=%d)		", x, y);
 
-
+		// If The Input Is Correct And Complete Run Analyze The Board
 		if (SPACE_pressed == true && ENTER_pressed == true){
 			SPACE_pressed = false;
 			ENTER_pressed = false;
@@ -1323,9 +1336,16 @@ int main(void)
 			
 			// If The Place Is A Boob, Game Is Over
 			if (bomb_array[x][y] == 1){
-				num_array[x][y] = -1;
-				lose = true;
-				printf("\nLOSE\n");
+				printf("Hello World");
+				// If The SW Is Not Zero, Flag The Position If There Is Indeed A Mine
+				if (*SW != 0) {
+					num_array[x][y] = -3;
+					total_score++;
+				} else {
+					num_array[x][y] = -1;
+					lose = true;
+					printf("\nLOSE\n");
+				}
 			// Otherwise Analyze Surrounding Environment
 			} else {
 				// Recursive Algorithm
@@ -1334,6 +1354,7 @@ int main(void)
 		}
     }
 }
+
 // ----------------------------------------------------------------------------------Searching Algorithm---------------------------------------------------------------------
 // Recursive Search
 void search(int col, int row){
@@ -1743,37 +1764,29 @@ void draw_game_board(int num_array[20][14]){
 			int imageY = 25 + j * 15;
 			int display_num = num_array[i][j];
 			// -2 = squart selected by no mines around it 
-			if (display_num == -2){
+			if (display_num == -3){
+				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, flag);
+			} else if (display_num == -2) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, num0);
-			}
-			else if (display_num == -1){
+			} else if (display_num == -1) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, mine);
-			}
-			else if(display_num == 1){
+			} else if(display_num == 1) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, num1);
-			}
-			else if(display_num == 2){
+			} else if(display_num == 2) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, num2);
-			}
-			else if(display_num == 3){
+			} else if(display_num == 3) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, num3);
-			}
-			else if(display_num == 1){
+			} else if(display_num == 1) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, num4);
-			}
-			else if(display_num == 1){
+			} else if(display_num == 1) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, num5);
-			}
-			else if(display_num == 1){
+			} else if(display_num == 1) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, num6);
-			}
-			else if(display_num == 1){
+			} else if(display_num == 1) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, num7);
-			}
-			else if(display_num == 1){
+			} else if(display_num == 1) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, num8);
-			}
-			else if(display_num == 0){
+			} else if(display_num == 0) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, blank_square);
 			}
 
