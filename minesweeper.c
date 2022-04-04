@@ -1272,6 +1272,11 @@ const uint16_t win_screen[220][220] = {
 int bomb_array[20][14] = {0};
 int num_array[20][14] = {0};
 int total_score = 0;
+bool display_message = false;
+
+// Used For For Loops
+int col;
+int row;
 
 // Data Structure Declaration
 int main(void)
@@ -1352,8 +1357,9 @@ int main(void)
 	int y = 0;
 
 	// Initialize All Mines
-	for (int col = 0; col < 20; col++){
-		for (int row = 0; row < 14; row++){
+
+	for (col = 0; col < 20; col++){
+		for (row = 0; row < 14; row++){
 			// one mine every 8 squares
 			// rand in a range of 1 ~ 8
 			int value = rand() % 8 + 1;
@@ -1396,16 +1402,16 @@ int main(void)
 				y = 0;
 
 				// Reset The Board Array
-				for (int row = 0; row < 14; row++){
-					for (int col = 0; col < 20; col++){
+				for (row = 0; row < 14; row++){
+					for (col = 0; col < 20; col++){
 						bomb_array[col][row] = 0;
 						num_array[col][row] = 0;
 					}
 				}
 
 				// Reinitialize All Mines
-				for(int col = 0; col < 20; col++){
-					for (int row = 0; row < 14; row++){
+				for(col = 0; col < 20; col++){
+					for (row = 0; row < 14; row++){
 						// one mine every 8 squares
 						// rand in a range of 1 ~ 8
 						int value = rand() % 8 + 1;
@@ -1451,16 +1457,16 @@ int main(void)
 				y = 0;
 
 				// Reset The Board Array
-				for (int row = 0; row < 14; row++){
-					for (int col = 0; col < 20; col++){
+				for (row = 0; row < 14; row++){
+					for (col = 0; col < 20; col++){
 						bomb_array[col][row] = 0;
 						num_array[col][row] = 0;
 					}
 				}
 
 				// Reinitialize All Mines
-				for(int col = 0; col < 20; col++){
-					for (int row = 0; row < 14; row++){
+				for(col = 0; col < 20; col++){
+					for (row = 0; row < 14; row++){
 						// one mine every 8 squares
 						// rand in a range of 1 ~ 8
 						int value = rand() % 8 + 1;
@@ -1573,9 +1579,12 @@ int main(void)
 			}
 		}
 
-		printf("(d1=%d,d2=%d)		", digit1, digit2);
-		printf("(x=%d,y=%d)		", x, y);
-		printf("byte3=%d	", byte3);
+		// Display Some Important Messages
+		if (display_message){
+			printf("(d1=%d,d2=%d)		", digit1, digit2);
+			printf("(x=%d,y=%d)		", x, y);
+			printf("byte3=%d	", byte3);
+		}
 
 		// Analyzing Interval Input
 		if (byte3 == KEY_c){
@@ -1591,7 +1600,7 @@ int main(void)
 				display_ERROR_on_HEX();
 				SPACE_pressed = false;
 			}
-			printf("SPACE_pressed=true	");
+			if (display_message) printf("SPACE_pressed=true	");
 		}
 
 		if (SPACE_pressed == true && byte3 == ENTER){
@@ -1604,18 +1613,16 @@ int main(void)
 				SPACE_pressed = false, ENTER_pressed = false;
 			}
 		}
-
-		printf("(x=%d,y=%d)		", x, y);
+		if (display_message) printf("(x=%d,y=%d)		", x, y);
 
 		// If The Input Is Correct And Complete Run Analyze The Board
 		if (SPACE_pressed == true && ENTER_pressed == true){
 			SPACE_pressed = false;
 			ENTER_pressed = false;
-			printf("(x=%d,y=%d)		", x, y);
+			if (display_message) printf("(x=%d,y=%d)		", x, y);
 			
 			// If The Place Is A Boob, Game Is Over
 			if (bomb_array[x][y] == 1){
-				printf("Hello World");
 				// If The SW Is Not Zero, Flag The Position If There Is Indeed A Mine
 				if (*SW != 0) {
 					num_array[x][y] = -3;
@@ -1623,7 +1630,7 @@ int main(void)
 				} else {
 					num_array[x][y] = -1;
 					lose = true;
-					printf("\nLOSE\n");
+					if (display_message) printf("\nLOSE\n");
 				}
 			// Otherwise Analyze Surrounding Environment
 			} else {
@@ -1664,8 +1671,8 @@ void search(int col, int row){
 
 bool check_win(){
 	// Check The Board Array
-	for (int row = 0; row < 14; row++){
-		for (int col = 0; col < 20; col++){
+	for (row = 0; row < 14; row++){
+		for (col = 0; col < 20; col++){
 			if (num_array[col][row] != -3 && bomb_array[col][row] == 1) return false;
 			if (num_array[col][row] == 0 && bomb_array[col][row] == 0) return false;
 		}
@@ -1694,10 +1701,8 @@ void wait_for_vsync()
 void clear_screen()
 {
     int row_num, col_num;
-    for (row_num = 0; row_num < RESOLUTION_Y; row_num++)
-    {
-        for (col_num = 0; col_num < RESOLUTION_X; col_num++)
-        {
+    for (row_num = 0; row_num < RESOLUTION_Y; row_num++){
+        for (col_num = 0; col_num < RESOLUTION_X; col_num++){
             plot_pixel(col_num, row_num, BLACK);
         }
     }
@@ -1741,12 +1746,9 @@ void draw_line(int x0, int y0, int x1, int y1, short int line_color)
 
     // Loop To Draw The Line
     int x;
-    for (x = x0; x < x1; x++)
-    {
-        if (is_steep)
-            plot_pixel(y, x, line_color);
-        else
-            plot_pixel(x, y, line_color);
+    for (x = x0; x < x1; x++){
+        if (is_steep) plot_pixel(y, x, line_color);
+        else plot_pixel(x, y, line_color);
 
         // Determining Increment Y Or Not
         error = error + deltay;
@@ -1762,10 +1764,8 @@ void draw_line(int x0, int y0, int x1, int y1, short int line_color)
 void draw_square(int x0, int y0, int size, short int box_color)
 {
     int row_num, col_num;
-    for (row_num = 0; row_num < size; row_num++)
-    {
-        for (col_num = 0; col_num < size; col_num++)
-        {
+    for (row_num = 0; row_num < size; row_num++){
+        for (col_num = 0; col_num < size; col_num++){
             plot_pixel(x0 + col_num, y0 + row_num, box_color);
         }
     }
@@ -1776,10 +1776,8 @@ void draw_rectangle(int x0, int y0, int x1, int y1, short int rectangle_color)
 {
     // Important Information (x0 < x1, y0 < y1)
     int row_num, col_num;
-    for (row_num = y0; row_num < y1; row_num++)
-    {
-        for (col_num = x0; col_num < x1; col_num++)
-        {
+    for (row_num = y0; row_num < y1; row_num++){
+        for (col_num = x0; col_num < x1; col_num++){
             plot_pixel(col_num, row_num, rectangle_color);
         }
     }
@@ -1843,9 +1841,9 @@ void draw_image(int imageX, int imageY, int row, int col, const uint16_t numberA
 
     // int row = sizeof(numberArray) / sizeof(numberArray[0]);
     // int column = sizeof(numberArray[0]) / sizeof(numberArray[0][0]);
-
-    for (int i = 0; i < row; ++i){
-        for (int j = 0; j < col; ++j){
+	int i, j;
+    for (i = 0; i < row; ++i){
+        for (j = 0; j < col; ++j){
             plot_pixel(x + i, y + j, numberArray[j][i]);
         }
     }
@@ -1867,8 +1865,9 @@ void draw_score(int imageX, int imageY, int number){
 	int y = imageY;
 
 	// eraser previous drawn scores
-	for (int i = x; i < x+150; i++){
-		for (int j = y; j < y+10; j++){
+	int i, j;
+	for (i = x; i < x+150; i++){
+		for (j = y; j < y+10; j++){
 			plot_pixel(i, j, BLACK);
 		}
 	}
@@ -1937,7 +1936,7 @@ void draw_score(int imageX, int imageY, int number){
 	}
 
 	int arr_num[3] = {num, num2, num3};
-	for(int i = 0; i < 3; i++){
+	for(i = 0; i < 3; i++){
 		if (arr_num[i] == 0){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
 			draw_horizontal_line(y+8, x+1, x+6, WHITE);
@@ -1945,12 +1944,10 @@ void draw_score(int imageX, int imageY, int number){
 			draw_vertical_line(x+1, y+1, y+8, WHITE);
 			draw_vertical_line(x+5, y+1, y+8, WHITE);
 
-		}
-		else if (arr_num[i] == 1){
+		} else if (arr_num[i] == 1){
 			draw_vertical_line(x+3, y+1, y+8, WHITE);
 
-		}
-		else if (arr_num[i] == 2){
+		} else if (arr_num[i] == 2){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
 			draw_horizontal_line(y+4, x+1, x+6, WHITE);
 			draw_horizontal_line(y+8, x+1, x+6, WHITE);
@@ -1958,22 +1955,19 @@ void draw_score(int imageX, int imageY, int number){
 			draw_vertical_line(x+5, y+1, y+5, WHITE);
 			draw_vertical_line(x+1, y+4, y+8, WHITE);
 
-		}
-		else if (arr_num[i] == 3){
+		} else if (arr_num[i] == 3){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
 			draw_horizontal_line(y+4, x+1, x+6, WHITE);
 			draw_horizontal_line(y+8, x+1, x+6, WHITE);
 
 			draw_vertical_line(x+5, y+1, y+8, WHITE);
 
-		}
-		else if (arr_num[i] == 4){
+		} else if (arr_num[i] == 4){
 			draw_line(x+1, y+4, x+2, y+1, WHITE);
 			draw_horizontal_line(y+4, x+1, x+6, WHITE);
 			draw_vertical_line(x+4, y+1, y+9, WHITE);
 
-		}
-		else if (arr_num[i] == 5){
+		} else if (arr_num[i] == 5){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
 			draw_horizontal_line(y+4, x+1, x+6, WHITE);
 			draw_horizontal_line(y+8, x+1, x+6, WHITE);
@@ -1981,8 +1975,7 @@ void draw_score(int imageX, int imageY, int number){
 			draw_vertical_line(x+1, y+1, y+5, WHITE);
 			draw_vertical_line(x+5, y+4, y+8, WHITE);
 
-		}
-		else if (arr_num[i] == 6){
+		} else if (arr_num[i] == 6){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
 			draw_horizontal_line(y+4, x+1, x+6, WHITE);
 			draw_horizontal_line(y+8, x+1, x+6, WHITE);
@@ -1990,21 +1983,18 @@ void draw_score(int imageX, int imageY, int number){
 			draw_vertical_line(x+1, y+1, y+8, WHITE);
 			draw_vertical_line(x+5, y+4, y+8, WHITE);
 			
-		}
-		else if (arr_num[i] == 7){
+		} else if (arr_num[i] == 7){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
 			draw_line(x+4, y+9, x+5, y+1, WHITE);
 			
-		}
-		else if (arr_num[i] == 8){
+		} else if (arr_num[i] == 8){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
 			draw_horizontal_line(y+4, x+1, x+6, WHITE);
 			draw_horizontal_line(y+8, x+1, x+6, WHITE);
 
 			draw_vertical_line(x+1, y+1, y+8, WHITE);
 			draw_vertical_line(x+5, y+1, y+8, WHITE);
-		}
-		else if (arr_num[i] == 9){
+		} else if (arr_num[i] == 9){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
 			draw_horizontal_line(y+4, x+1, x+6, WHITE);
 			draw_horizontal_line(y+8, x+1, x+6, WHITE);
@@ -2024,12 +2014,13 @@ int find_mine_num(int square_index_x, int sqaure_index_y, int bomb_array[20][14]
 	int x_index = square_index_x;
 	int y_index = sqaure_index_y;
 
-	for (int i = x_index-1; i <= x_index+1;i++){
+	int i, j;
+	for (i = x_index-1; i <= x_index+1;i++){
 		if (i < 0 || i > 19){
 			continue;
 		}
-		for (int j = y_index-1; j <= y_index+1; j++){
-			printf("(%d, %d)=%d		", i, j, bomb_array[i][j]);
+		for (j = y_index-1; j <= y_index+1; j++){
+			if (display_message) printf("(%d, %d)=%d		", i, j, bomb_array[i][j]);
 			if (j < 0 || j > 13){
 				continue;
 			}
@@ -2038,15 +2029,14 @@ int find_mine_num(int square_index_x, int sqaure_index_y, int bomb_array[20][14]
 			}
 		}
 	}
-	// printf("count = %d, end! \n", count);
 	return count;
 }
 
 // Draw Game Board
 void draw_game_board(int num_array[20][14]){
 	// drawing game board 20 by 14
-	for(int col = 0; col < 20; ++col){
-		for(int row = 0; row < 14; ++row){
+	for(col = 0; col < 20; ++col){
+		for(row = 0; row < 14; ++row){
 			int imageX = 10 + col * 15;
 			int imageY = 25 + row * 15;
 			int display_num = num_array[col][row];
@@ -2082,8 +2072,8 @@ void draw_game_board(int num_array[20][14]){
 
 // Draw All The Mines
 void draw_mines(int bomb_array[20][14]){
-	for (int col = 0; col < 20; ++col){
-		for (int row = 0; row < 14; ++row){
+	for (col = 0; col < 20; ++col){
+		for (row = 0; row < 14; ++row){
 			int imageX = 10 + col * 15;
 			int imageY = 25 + row * 15;
 			int display_num = bomb_array[col][row];
