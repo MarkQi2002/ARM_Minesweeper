@@ -1805,8 +1805,7 @@ void draw_game_frame()
 
 // -----------------------------------------------------------------------------------Interrupt Initialization--------------------------------------------------------------
 // Turn On Interrupts in the ARM processor
-void enable_A9_interrupts(void)
-{
+void enable_A9_interrupts(void){
     int status = SVC_MODE | INT_ENABLE;
     asm("msr cpsr, %[ps]"
         :
@@ -1814,8 +1813,7 @@ void enable_A9_interrupts(void)
 }
 
 // Function Used For Configuring The Genhgggeric Interrupt Controller (GIC)
-void config_GIC(void)
-{
+void config_GIC(void){
     // Used To Calculate Register Addresses
     int address;
 
