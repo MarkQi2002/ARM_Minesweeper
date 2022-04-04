@@ -48,6 +48,7 @@ Note: 	A. When PS/2 keyboard detects an input, LEDRs reads the input value and d
 #define	KEY_7		0x3D
 #define	KEY_8		0x3E
 #define	KEY_9		0x46
+#define KEY_s       0x1B
 #define	KEY_c		0x21
 
 #define ARROW_UP	0x75
@@ -1273,14 +1274,16 @@ int bomb_array[20][14] = {0};
 int num_array[20][14] = {0};
 int total_score = 0;
 bool display_message = false;
+int xSelect = 0;
+int ySelect = 0;
+bool selectPos = false;
 
 // Used For For Loops
 int col;
 int row;
 
 // Data Structure Declaration
-int main(void)
-{
+int main(void){
     // Variable Declaration
     // srand(time(NULL));
 
@@ -1379,6 +1382,9 @@ int main(void)
 
 	// Game Loop
     while (1){
+		// If The Push Button Is Pressed The Game Is Automatically Stopped
+		if (*pushButtons != 0) break;
+
 		// Lost Loop
 		while (lose == true){
 			wait_for_vsync();                           // swap front and back buffers on VGA vertical sync
@@ -1577,6 +1583,14 @@ int main(void)
 			} else if(confirm_digit1 == true){
 				digit2 = 8;
 			}
+		} else if (byte3 == KEY_9) {
+			if(confirm_digit1 == false){
+				digit1 = 9;
+			} else if(confirm_digit1 == true){
+				digit2 = 9;
+			}
+		} else if (byte3 == KEY_s) {
+			selectPos = true;
 		}
 
 		// Display Some Important Messages
@@ -1616,9 +1630,14 @@ int main(void)
 		if (display_message) printf("(x=%d,y=%d)		", x, y);
 
 		// If The Input Is Correct And Complete Run Analyze The Board
-		if (SPACE_pressed == true && ENTER_pressed == true){
+		if ((SPACE_pressed == true && ENTER_pressed == true) || selectPos){
 			SPACE_pressed = false;
 			ENTER_pressed = false;
+
+			xSelect = x;
+			ySelect = y;
+			selectPos = false;
+
 			if (display_message) printf("(x=%d,y=%d)		", x, y);
 			
 			// If The Place Is A Boob, Game Is Over
@@ -1683,8 +1702,7 @@ bool check_win(){
 
 // ----------------------------------------------------------------------------------Drawing Functions-----------------------------------------------------------------------
 // Function For Waiting Vertical Sychronization
-void wait_for_vsync()
-{
+void wait_for_vsync(){
     volatile int *pixel_ctrl_ptr = (int *)0xFF203020;
     volatile int *pixel_status_register = (int *)0xFF20302C;
 
@@ -1698,8 +1716,7 @@ void wait_for_vsync()
 }
 
 // Function For Clearing/Resetting The Entire Screen
-void clear_screen()
-{
+void clear_screen(){
     int row_num, col_num;
     for (row_num = 0; row_num < RESOLUTION_Y; row_num++){
         for (col_num = 0; col_num < RESOLUTION_X; col_num++){
@@ -1709,16 +1726,14 @@ void clear_screen()
 }
 
 // Helper Function For Swapping Two Integer Variables (Used In draw_line)
-void swap(int *xp, int *yp)
-{
+void swap(int *xp, int *yp){
     int temp = *xp;
     *xp = *yp;
     *yp = temp;
 }
 
 // Function For Drawing A Straight Line Using Bresenham's Algorithm
-void draw_line(int x0, int y0, int x1, int y1, short int line_color)
-{
+void draw_line(int x0, int y0, int x1, int y1, short int line_color){
     bool is_steep = abs(y1 - y0) > abs(x1 - x0);
     if (is_steep)
     {
@@ -1761,8 +1776,7 @@ void draw_line(int x0, int y0, int x1, int y1, short int line_color)
 }
 
 // Function For Drawing A Box
-void draw_square(int x0, int y0, int size, short int box_color)
-{
+void draw_square(int x0, int y0, int size, short int box_color){
     int row_num, col_num;
     for (row_num = 0; row_num < size; row_num++){
         for (col_num = 0; col_num < size; col_num++){
@@ -1772,8 +1786,7 @@ void draw_square(int x0, int y0, int size, short int box_color)
 }
 
 // Function For Drawing A Rectangle
-void draw_rectangle(int x0, int y0, int x1, int y1, short int rectangle_color)
-{
+void draw_rectangle(int x0, int y0, int x1, int y1, short int rectangle_color){
     // Important Information (x0 < x1, y0 < y1)
     int row_num, col_num;
     for (row_num = y0; row_num < y1; row_num++){
@@ -1784,14 +1797,12 @@ void draw_rectangle(int x0, int y0, int x1, int y1, short int rectangle_color)
 }
 
 // Function Used For Drawing A Single Pixel On the Screen
-void plot_pixel(int x, int y, short int pixel_color)
-{
+void plot_pixel(int x, int y, short int pixel_color){
     *(short int *)(pixel_buffer_start + (y << 10) + (x << 1)) = pixel_color;
 }
 
 // Function Used For Drawing A Frame Around The Game
-void draw_game_frame()
-{
+void draw_game_frame(){
     // Top Row And Bottom Row
     draw_rectangle(GAME_FRAME_LEFT_X, GAME_FRAME_UPPER_Y, GAME_FRAME_RIGHT_X, GAME_FRAME_UPPER_Y + GAME_FRAME_WIDTH, GREY);
     draw_rectangle(GAME_FRAME_LEFT_X, GAME_FRAME_BOTTOM_Y - GAME_FRAME_WIDTH, GAME_FRAME_RIGHT_X, GAME_FRAME_BOTTOM_Y, GREY);
@@ -1834,8 +1845,7 @@ void config_GIC(void){
 
 // -----------------------------------------------------------------------------------More Drawing Functions------------------------------------------------------------------
 // Draw The Image
-void draw_image(int imageX, int imageY, int row, int col, const uint16_t numberArray[row][col])
-{
+void draw_image(int imageX, int imageY, int row, int col, const uint16_t numberArray[row][col]){
     int x = imageX;
     int y = imageY;
 
