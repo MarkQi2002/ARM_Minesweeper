@@ -1352,7 +1352,7 @@ int main(void)
 	int y = 0;
 
 	// Initialize All Mines
-	for(int col = 0; col < 20; col++){
+	for (int col = 0; col < 20; col++){
 		for (int row = 0; row < 14; row++){
 			// one mine every 8 squares
 			// rand in a range of 1 ~ 8
@@ -2047,11 +2047,11 @@ int find_mine_num(int square_index_x, int sqaure_index_y, int bomb_array[20][14]
 // Draw Game Board
 void draw_game_board(int num_array[20][14]){
 	// drawing game board 20 by 14
-	for(int i = 0; i < 20; ++i){
-		for(int j = 0; j < 14; ++j){
-			int imageX = 10 + i * 15;
-			int imageY = 25 + j * 15;
-			int display_num = num_array[i][j];
+	for(int col = 0; col < 20; ++col){
+		for(int row = 0; row < 14; ++row){
+			int imageX = 10 + col * 15;
+			int imageY = 25 + row * 15;
+			int display_num = num_array[col][row];
 			// -2 = squart selected by no mines around it 
 			if (display_num == -3){
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, flag);
@@ -2078,27 +2078,22 @@ void draw_game_board(int num_array[20][14]){
 			} else if(display_num == 0) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, blank_square);
 			}
-
-			// printf("%d ", display_num);
 		}
-		// printf("\n\n ");
 	}
 }
 
 // Draw All The Mines
 void draw_mines(int bomb_array[20][14]){
-	for(int i = 0; i < 20; ++i){
-		for(int j = 0; j < 14; ++j){
-			int imageX = 10 + i * 15;
-			int imageY = 25 + j * 15;
-			int display_num = bomb_array[i][j];
+	for (int col = 0; col < 20; ++col){
+		for (int row = 0; row < 14; ++row){
+			int imageX = 10 + col * 15;
+			int imageY = 25 + row * 15;
+			int display_num = bomb_array[col][row];
 			// -2 = squart selected by no mines around it 
 			if (display_num == 1){
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, mine);
 			}
-			// printf("%d ", display_num);
 		}
-		// printf("\n\n ");
 	}
 
 }
