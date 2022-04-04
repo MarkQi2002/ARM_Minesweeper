@@ -157,6 +157,8 @@ void display_ERROR_on_HEX();
 
 void clear_HEX_display();
 
+void search(int col, int row);
+
 // Variable Declarations
 volatile int * pushButtons = (int * ) KEY_BASE;
 volatile int * SW = (int * ) SW_BASE;
@@ -1023,6 +1025,11 @@ const uint16_t start_screen[220][220] = {
 
 };
 
+// Some Global Variables
+int bomb_array[20][14] = {0};
+int num_array[20][14] = {0};
+int total_score = 0;
+
 // Data Structure Declaration
 int main(void)
 {
@@ -1058,7 +1065,6 @@ int main(void)
 	unsigned char byte2 = 0;
 	unsigned char byte3 = 0;
 	int PS2_data, RVALID;
-	int total_score = 0;
 	bool confirm_digit1 = false;
 	int digit1 = 0, digit2 = 0;
 
@@ -1098,8 +1104,6 @@ int main(void)
 	clear_screen();
 
 	// declaring variables
-	int bomb_array[20][14] = {0};
-	int num_array[20][14] = {0};
 	int x = 0;
 	int y = 0;
 
@@ -1281,461 +1285,40 @@ int main(void)
 				printf("\nLOSE\n");
 			// Otherwise Analyze Surrounding Environment
 			} else {
-				// Variable Declaration
-				bool search = true;
-				bool xLeft = true;
-				bool xRight = true;
-
-				int xLocOne = x;
-				int xLocTwo = x;
-				int yLoc = y;
-
-				while (search) {
-					// xLeft Does Toward The Left Side
-					// This Loop Analyze Downward
-					//if (num_array[x][y] > 0) break;
-					yLoc = y;
-					while (xLeft) {
-						if (yLoc == 14) break;
-						int num_mines = find_mine_num(xLocOne, yLoc, bomb_array);
-						if (bomb_array[xLocOne][yLoc] == 1) break;
-						if (num_array[xLocOne][yLoc] > 0) break;
-						if (num_array[xLocOne][yLoc] == 0) total_score++;
-						if (num_mines == 0){
-							num_array[xLocOne][yLoc] = -2;
-							int tempX = xLocOne;
-							while (tempX != -1){
-								int num_mines = find_mine_num(tempX, yLoc, bomb_array);
-								if (bomb_array[tempX][yLoc] == 1) break;
-								if (num_array[tempX][yLoc] > 0) break;
-								if (num_array[tempX][yLoc] == 0) total_score++;
-								if (num_mines == 0){
-									num_array[tempX][yLoc] = -2;
-								} else {
-									num_array[tempX][yLoc] = num_mines;
-									if (num_array[tempX][yLoc] == 0) total_score++;
-									break;
-								}
-
-								int tempY = yLoc;
-								while (tempY != -1){
-									int num_mines = find_mine_num(tempX, tempY, bomb_array);
-									if (bomb_array[tempX][tempY] == 1) break;
-									if (num_array[tempX][tempY] > 0) break;
-									if (num_array[tempX][tempY] == 0) total_score++;
-									if (num_mines == 0){
-										num_array[tempX][tempY] = -2;
-									} else {
-										num_array[tempX][tempY] = num_mines;
-										break;
-									}
-									tempY--;
-								}
-								tempY = yLoc;
-								while (tempY != 14){
-									int num_mines = find_mine_num(tempX, tempY, bomb_array);
-									if (bomb_array[tempX][tempY] == 1) break;
-									if (num_array[tempX][tempY] > 0) break;
-									if (num_array[tempX][tempY] == 0) total_score++;
-									if (num_mines == 0){
-										num_array[tempX][tempY] = -2;
-									} else {
-										num_array[tempX][tempY] = num_mines;
-										break;
-									}
-									tempY++;
-								}
-
-								tempX--;
-							}
-							tempX = xLocOne;
-							while (tempX != 20){
-								int num_mines = find_mine_num(tempX, yLoc, bomb_array);
-								if (bomb_array[tempX][yLoc] == 1) break;
-								if (num_array[tempX][yLoc] > 0) break;
-								if (num_array[tempX][yLoc] == 0) total_score++;
-								if (num_mines == 0){
-									num_array[tempX][yLoc] = -2;
-								} else {
-									num_array[tempX][yLoc] = num_mines;
-									break;
-								}
-
-								int tempY = yLoc;
-								while (tempY != -1){
-									int num_mines = find_mine_num(tempX, tempY, bomb_array);
-									if (bomb_array[tempX][tempY] == 1) break;
-									if (num_array[tempX][tempY] > 0) break;
-									if (num_array[tempX][tempY] == 0) total_score++;
-									if (num_mines == 0){
-										num_array[tempX][tempY] = -2;
-									} else {
-										num_array[tempX][tempY] = num_mines;
-										break;
-									}
-									tempY--;
-								}
-								tempY = yLoc;
-								while (tempY != 14){
-									int num_mines = find_mine_num(tempX, tempY, bomb_array);
-									if (bomb_array[tempX][tempY] == 1) break;
-									if (num_array[tempX][tempY] > 0) break;
-									if (num_array[tempX][tempY] == 0) total_score++;
-									if (num_mines == 0){
-										num_array[tempX][tempY] = -2;
-									} else {
-										num_array[tempX][tempY] = num_mines;
-										break;
-									}
-									tempY++;
-								}
-								tempX++;
-							}
-						} else {
-							num_array[xLocOne][yLoc] = num_mines;
-							break;
-						}
-						yLoc++;
-					}
-					
-					// Reset yLoc then Analyze Upward
-					yLoc = y - 1;
-					while (xLeft) {
-						if (yLoc == -1) break;
-						int num_mines = find_mine_num(xLocOne, yLoc, bomb_array);
-						if (bomb_array[xLocOne][yLoc] == 1) break;
-						if (num_array[xLocOne][yLoc] > 0) break;
-						if (num_array[xLocOne][yLoc] == 0) total_score++;
-						if (num_mines == 0){
-							num_array[xLocOne][yLoc] = -2;
-							int tempX = xLocOne;
-							while (tempX != -1){
-								int num_mines = find_mine_num(tempX, yLoc, bomb_array);
-								if (bomb_array[tempX][yLoc] == 1) break;
-								if (num_array[tempX][yLoc] > 0) break;
-								if (num_array[tempX][yLoc] == 0) total_score++;
-								if (num_mines == 0){
-									num_array[tempX][yLoc] = -2;
-								} else {
-									num_array[tempX][yLoc] = num_mines;
-									break;
-								}
-
-								int tempY = yLoc;
-								while (tempY != -1){
-									int num_mines = find_mine_num(tempX, tempY, bomb_array);
-									if (bomb_array[tempX][tempY] == 1) break;
-									if (num_array[tempX][tempY] > 0) break;
-									if (num_array[tempX][tempY] == 0) total_score++;
-									if (num_mines == 0){
-										num_array[tempX][tempY] = -2;
-									} else {
-										num_array[tempX][tempY] = num_mines;
-										break;
-									}
-									tempY--;
-								}
-
-								tempY = yLoc;
-								while (tempY != 14){
-									int num_mines = find_mine_num(tempX, tempY, bomb_array);
-									if (bomb_array[tempX][tempY] == 1) break;
-									if (num_array[tempX][tempY] > 0) break;
-									if (num_array[tempX][tempY] == 0) total_score++;
-									if (num_mines == 0){
-										num_array[tempX][tempY] = -2;
-									} else {
-										num_array[tempX][tempY] = num_mines;
-										break;
-									}
-									tempY++;
-								}
-								tempX--;
-							}
-
-							tempX = xLocOne;
-							while (tempX != 20){
-								int num_mines = find_mine_num(tempX, yLoc, bomb_array);
-								if (bomb_array[tempX][yLoc] == 1) break;
-								if (num_array[tempX][yLoc] > 0) break;
-								if (num_array[tempX][yLoc] == 0) total_score++;
-								if (num_mines == 0){
-									num_array[tempX][yLoc] = -2;
-								} else {
-									num_array[tempX][yLoc] = num_mines;
-									break;
-								}
-
-								int tempY = yLoc;
-								while (tempY != -1){
-									int num_mines = find_mine_num(tempX, tempY, bomb_array);
-									if (bomb_array[tempX][tempY] == 1) break;
-									if (num_array[tempX][tempY] > 0) break;
-									if (num_array[tempX][tempY] == 0) total_score++;
-									if (num_mines == 0){
-										num_array[tempX][tempY] = -2;
-									} else {
-										num_array[tempX][tempY] = num_mines;
-										break;
-									}
-									tempY--;
-								}
-
-								tempY = yLoc;
-								while (tempY != 14){
-									int num_mines = find_mine_num(tempX, tempY, bomb_array);
-									if (bomb_array[tempX][tempY] == 1) break;
-									if (num_array[tempX][tempY] > 0) break;
-									if (num_array[tempX][tempY] == 0) total_score++;
-									if (num_mines == 0){
-										num_array[tempX][tempY] = -2;
-									} else {
-										num_array[tempX][tempY] = num_mines;
-										break;
-									}
-									tempY++;
-								}
-								tempX++;
-							}
-						} else {
-							num_array[xLocOne][yLoc] = num_mines;
-							break;
-						}
-						yLoc--;
-					}
-					
-					// xRight Does Toward The Right Side
-					// This Loop Analyze Downward
-					yLoc = y;
-					while (xRight) {
-						if (yLoc == 14) break;
-						int num_mines = find_mine_num(xLocTwo, yLoc, bomb_array);
-						if (bomb_array[xLocTwo][yLoc] == 1) break;
-						if (num_array[xLocTwo][yLoc] > 0) break;
-						if (num_array[xLocTwo][yLoc] == 0) total_score++;
-						if (num_mines == 0){
-							num_array[xLocTwo][yLoc] = -2;
-							int tempX = xLocTwo;
-							while (tempX != -1){
-								int num_mines = find_mine_num(tempX, yLoc, bomb_array);
-								if (bomb_array[tempX][yLoc] == 1) break;
-								if (num_array[tempX][yLoc] > 0) break;
-								if (num_array[tempX][yLoc] == 0) total_score++;
-								if (num_mines == 0){
-									num_array[tempX][yLoc] = -2;
-								} else {
-									num_array[tempX][yLoc] = num_mines;
-									break;
-								}
-
-								int tempY = yLoc;
-								while (tempY != -1){
-									int num_mines = find_mine_num(tempX, tempY, bomb_array);
-									if (bomb_array[tempX][tempY] == 1) break;
-									if (num_array[tempX][tempY] > 0) break;
-									if (num_array[tempX][tempY] == 0) total_score++;
-									if (num_mines == 0){
-										num_array[tempX][tempY] = -2;
-									} else {
-										num_array[tempX][tempY] = num_mines;
-										break;
-									}
-									tempY--;
-								}
-								tempY = yLoc;
-								while (tempY != 14){
-									int num_mines = find_mine_num(tempX, tempY, bomb_array);
-									if (bomb_array[tempX][tempY] == 1) break;
-									if (num_array[tempX][tempY] > 0) break;
-									if (num_array[tempX][tempY] == 0) total_score++;
-									if (num_mines == 0){
-										num_array[tempX][tempY] = -2;
-									} else {
-										num_array[tempX][tempY] = num_mines;
-										break;
-									}
-									tempY++;
-								}
-
-								tempX--;
-							}
-							tempX = xLocTwo;
-							while (tempX != 20){
-								int num_mines = find_mine_num(tempX, yLoc, bomb_array);
-								if (bomb_array[tempX][yLoc] == 1) break;
-								if (num_array[tempX][yLoc] > 0) break;
-								if (num_array[tempX][yLoc] == 0) total_score++;
-								if (num_mines == 0){
-									num_array[tempX][yLoc] = -2;
-								} else {
-									num_array[tempX][yLoc] = num_mines;
-									break;
-								}
-
-								int tempY = yLoc;
-								while (tempY != -1){
-									int num_mines = find_mine_num(tempX, tempY, bomb_array);
-									if (bomb_array[tempX][tempY] == 1) break;
-									if (num_array[tempX][tempY] > 0) break;
-									if (num_array[tempX][tempY] == 0) total_score++;
-									if (num_mines == 0){
-										num_array[tempX][tempY] = -2;
-									} else {
-										num_array[tempX][tempY] = num_mines;
-										break;
-									}
-									tempY--;
-								}
-								tempY = yLoc;
-								while (tempY != 14){
-									int num_mines = find_mine_num(tempX, tempY, bomb_array);
-									if (bomb_array[tempX][tempY] == 1) break;
-									if (num_array[tempX][tempY] > 0) break;
-									if (num_array[tempX][tempY] == 0) total_score++;
-									if (num_mines == 0){
-										num_array[tempX][tempY] = -2;
-									} else {
-										num_array[tempX][tempY] = num_mines;
-										break;
-									}
-									tempY++;
-								}
-								tempX++;
-							}
-						} else {
-							num_array[xLocTwo][yLoc] = num_mines;
-							break;
-						}
-						yLoc++;
-					}
-
-					// Reset yLoc then Analyze Upward
-					yLoc = y - 1;
-					while (xRight) {
-						if (yLoc == -1) break;
-						int num_mines = find_mine_num(xLocTwo, yLoc, bomb_array);
-						if (bomb_array[xLocTwo][yLoc] == 1) break;
-						if (num_array[xLocTwo][yLoc] > 0) break;
-						if (num_array[xLocTwo][yLoc] == 0) total_score++;
-						if (num_mines == 0){
-							num_array[xLocTwo][yLoc] = -2;
-							int tempX = xLocTwo;
-							while (tempX != -1){
-								int num_mines = find_mine_num(tempX, yLoc, bomb_array);
-								if (bomb_array[tempX][yLoc] == 1) break;
-								if (num_array[tempX][yLoc] > 0) break;
-								if (num_array[tempX][yLoc] == 0) total_score++;
-								if (num_mines == 0){
-									num_array[tempX][yLoc] = -2;
-								} else {
-									num_array[tempX][yLoc] = num_mines;
-									break;
-								}
-
-								int tempY = yLoc;
-								while (tempY != -1){
-									int num_mines = find_mine_num(tempX, tempY, bomb_array);
-									if (bomb_array[tempX][tempY] == 1) break;
-									if (num_array[tempX][tempY] > 0) break;
-									if (num_array[tempX][tempY] == 0) total_score++;
-									if (num_mines == 0){
-										num_array[tempX][tempY] = -2;
-									} else {
-										num_array[tempX][tempY] = num_mines;
-										break;
-									}
-									tempY--;
-								}
-
-								tempY = yLoc;
-								while (tempY != 14){
-									int num_mines = find_mine_num(tempX, tempY, bomb_array);
-									if (bomb_array[tempX][tempY] == 1) break;
-									if (num_array[tempX][tempY] > 0) break;
-									if (num_array[tempX][tempY] == 0) total_score++;
-									if (num_mines == 0){
-										num_array[tempX][tempY] = -2;
-									} else {
-										num_array[tempX][tempY] = num_mines;
-										break;
-									}
-									tempY++;
-								}
-								tempX--;
-							}
-
-							tempX = xLocTwo;
-							while (tempX != 20){
-								int num_mines = find_mine_num(tempX, yLoc, bomb_array);
-								if (bomb_array[tempX][yLoc] == 1) break;
-								if (num_array[tempX][yLoc] > 0) break;
-								if (num_array[tempX][yLoc] == 0) total_score++;
-								if (num_mines == 0){
-									num_array[tempX][yLoc] = -2;
-								} else {
-									num_array[tempX][yLoc] = num_mines;
-									break;
-								}
-								
-								int tempY = yLoc;
-								while (tempY != -1){
-									int num_mines = find_mine_num(tempX, tempY, bomb_array);
-									if (bomb_array[tempX][tempY] == 1) break;
-									if (num_array[tempX][tempY] > 0) break;
-									if (num_array[tempX][tempY] == 0) total_score++;
-									if (num_mines == 0){
-										num_array[tempX][tempY] = -2;
-									} else {
-										num_array[tempX][tempY] = num_mines;
-										break;
-									}
-									tempY--;
-								}
-
-								tempY = yLoc;
-								while (tempY != 14){
-									int num_mines = find_mine_num(tempX, tempY, bomb_array);
-									if (bomb_array[tempX][tempY] == 1) break;
-									if (num_array[tempX][tempY] > 0) break;
-									if (num_array[tempX][tempY] == 0) total_score++;
-									if (num_mines == 0){
-										num_array[tempX][tempY] = -2;
-									} else {
-										num_array[tempX][tempY] = num_mines;
-										break;
-									}
-									tempY++;
-								}
-								tempX++;
-							}
-						} else {
-							num_array[xLocTwo][yLoc] = num_mines;
-							break;
-						}
-						yLoc--;
-					}
-					yLoc = y;
-
-
-					// Shifts The Two X Positions, Then Analyze If The Search Has Ended Or Not
-					yLoc = y;
-					if (xLocOne >= 0 && xLocOne < 20){
-						if (num_array[xLocOne][yLoc] > 0) xLeft = false;
-					}
-					if (xLocTwo >= 0 && xLocTwo < 20){
-						if (num_array[xLocTwo][yLoc] > 0) xRight = false;
-					}
-					xLocOne--;
-					xLocTwo++;
-					if (xLocOne <= -1) xLeft = false;
-					if (xLocTwo >= 20) xRight = false;
-
-					if (xLocOne <= -1 && xLocTwo >= 20) break;
-				}
+				// Recursive Algorithm
+				search(x, y);
 			}
 		}
     }
 }
+
+// Recursive Search
+void search(int col, int row){
+	if (col >= 20 || col < 0) return;
+	if (row >= 14 || row < 0) return;
+	
+	int num_mines = find_mine_num(col, row, bomb_array);
+	if (bomb_array[col][row] == 1) return;
+	if (num_array[col][row] != 0) return;
+	if (num_array[col][row] == 0) total_score++;
+
+	if (num_mines == 0){
+		num_array[col][row] = -2;
+	} else {
+		num_array[col][row] = num_mines;
+		return;
+	}
+
+	search(col - 1, row - 1);
+	search(col, row - 1);
+	search(col + 1, row - 1);
+	search(col - 1, row);
+	search(col + 1, row);
+	search(col - 1, row + 1);
+	search(col, row + 1);
+	search(col + 1, row + 1);
+}
+
 
 // Function For Waiting Vertical Sychronization
 void wait_for_vsync()
@@ -2093,7 +1676,7 @@ int find_mine_num(int square_index_x, int sqaure_index_y, int bomb_array[20][14]
 		}
 		for (int j = y_index-1; j <= y_index+1; j++){
 			printf("(%d, %d)=%d		", i, j, bomb_array[i][j]);
-			if (j < 0 || j > 19){
+			if (j < 0 || j > 13){
 				continue;
 			}
 			if (bomb_array[i][j] == 1){
