@@ -1289,6 +1289,9 @@ int col;
 int row;
 int i, j;
 
+// Used For Time Keeping
+time_t start_time;
+
 // Data Structure Declaration
 int main(void){
     // Variable Declaration
@@ -1386,6 +1389,9 @@ int main(void){
 
 	// Drawing The Current Score
 	draw_score(10, 10, total_score);
+	
+	// Time Keeping
+	start_time = time(NULL);
 
 	// Game Loop
     while (1){
@@ -1447,6 +1453,9 @@ int main(void){
 				// Drawing The Current Score
 				draw_score(10, 10, total_score);
 				
+				// For Time Keeping
+				start_time = time(NULL);
+
 				break;
 			}
 		}
@@ -1506,6 +1515,9 @@ int main(void){
 
 				// Drawing The Current Score
 				draw_score(10, 10, total_score);
+				
+				// For Time Keeping
+				start_time = time(NULL);
 				
 				break; 
 			}
@@ -2171,6 +2183,105 @@ void draw_score(int imageX, int imageY, int number){
 		x = x + 8;
 	}
 
+	x = x + 16;
+	time_t endTime = time(NULL);
+	time_t difftime = endTime - start_time;
+	
+	// drawing bomb score
+	if (difftime <= 9){
+		num = 0;
+		num2 = 0;
+		num3 = difftime;
+	} else if(difftime <= 99) {
+		num = 0;
+		num2 = difftime / 10;
+		num3 = difftime % 10;
+	} else {
+		num = difftime / 100;
+		num2 = difftime % 100 / 10;
+		num3 = difftime % 100 % 10;
+	}
+
+	arr_num[0] = num;
+	arr_num[1] = num2;
+	arr_num[2] = num3;
+	for(i = 0; i < 3; i++){
+		if (arr_num[i] == 0){
+			draw_horizontal_line(y+1, x+1, x+6, WHITE);
+			draw_horizontal_line(y+8, x+1, x+6, WHITE);
+
+			draw_vertical_line(x+1, y+1, y+8, WHITE);
+			draw_vertical_line(x+5, y+1, y+8, WHITE);
+
+		} else if (arr_num[i] == 1){
+			draw_vertical_line(x+3, y+1, y+8, WHITE);
+
+		} else if (arr_num[i] == 2){
+			draw_horizontal_line(y+1, x+1, x+6, WHITE);
+			draw_horizontal_line(y+4, x+1, x+6, WHITE);
+			draw_horizontal_line(y+8, x+1, x+6, WHITE);
+
+			draw_vertical_line(x+5, y+1, y+5, WHITE);
+			draw_vertical_line(x+1, y+4, y+8, WHITE);
+
+		} else if (arr_num[i] == 3){
+			draw_horizontal_line(y+1, x+1, x+6, WHITE);
+			draw_horizontal_line(y+4, x+1, x+6, WHITE);
+			draw_horizontal_line(y+8, x+1, x+6, WHITE);
+
+			draw_vertical_line(x+5, y+1, y+8, WHITE);
+
+		} else if (arr_num[i] == 4){
+			draw_line(x+1, y+4, x+2, y+1, WHITE);
+			draw_horizontal_line(y+4, x+1, x+6, WHITE);
+			draw_vertical_line(x+4, y+1, y+9, WHITE);
+
+		} else if (arr_num[i] == 5){
+			draw_horizontal_line(y+1, x+1, x+6, WHITE);
+			draw_horizontal_line(y+4, x+1, x+6, WHITE);
+			draw_horizontal_line(y+8, x+1, x+6, WHITE);
+
+			draw_vertical_line(x+1, y+1, y+5, WHITE);
+			draw_vertical_line(x+5, y+4, y+8, WHITE);
+
+		} else if (arr_num[i] == 6){
+			draw_horizontal_line(y+1, x+1, x+6, WHITE);
+			draw_horizontal_line(y+4, x+1, x+6, WHITE);
+			draw_horizontal_line(y+8, x+1, x+6, WHITE);
+
+			draw_vertical_line(x+1, y+1, y+8, WHITE);
+			draw_vertical_line(x+5, y+4, y+8, WHITE);
+			
+		} else if (arr_num[i] == 7){
+			draw_horizontal_line(y+1, x+1, x+6, WHITE);
+			draw_line(x+4, y+9, x+5, y+1, WHITE);
+			
+		} else if (arr_num[i] == 8){
+			draw_horizontal_line(y+1, x+1, x+6, WHITE);
+			draw_horizontal_line(y+4, x+1, x+6, WHITE);
+			draw_horizontal_line(y+8, x+1, x+6, WHITE);
+
+			draw_vertical_line(x+1, y+1, y+8, WHITE);
+			draw_vertical_line(x+5, y+1, y+8, WHITE);
+		} else if (arr_num[i] == 9){
+			draw_horizontal_line(y+1, x+1, x+6, WHITE);
+			draw_horizontal_line(y+4, x+1, x+6, WHITE);
+			draw_horizontal_line(y+8, x+1, x+6, WHITE);
+
+			draw_vertical_line(x+1, y+1, y+5, WHITE);
+			draw_vertical_line(x+5, y+1, y+8, WHITE);
+		}
+		x = x + 8;
+	}
+
+	x = x + 8;
+	// draw S
+	draw_horizontal_line(y+1, x+1, x+6, WHITE);
+	draw_horizontal_line(y+4, x+1, x+6, WHITE);
+	draw_horizontal_line(y+8, x+1, x+6, WHITE);
+
+	draw_vertical_line(x+1, y+1, y+5, WHITE);
+	draw_vertical_line(x+5, y+4, y+8, WHITE);
 }
 
 // ------------------------------------------------------------------------------------Game Mechanic Related Functions---------------------------------------------------------
