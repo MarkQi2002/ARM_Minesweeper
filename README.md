@@ -18,11 +18,12 @@ Professor: Jonathan Rose <br />
 - Win Condition: Flag every single mines or explore all other squares <br />
 - Lose Condition: If selected a position containing a mine, the game is lost <br />
 
-## Input Control
+## Input Control (PS/2 Keyboard)
 - Using PS/2 Keyboard Input On The DE1-SoC Board <br />
 <p align="center">
 <img src="README_img/PS_2_Keyboard.png">  <br />
 <p align="left">
+
 ### Input Methods (Single Key)
 *- Key S: Select The Location Player Want To Explore* <br />
 *- Key F: Flag The Location Player Think Contain A Mine* <br />
@@ -40,3 +41,22 @@ Professor: Jonathan Rose <br />
 #### Final Step
 *- Press Enter And The Player Has Successfully Selected A Position To Check To Flag* <br />
 *- The Input Should Look Something Like #c# 'space' #c# 'enter', where # are digit from 0 - 9*
+
+## Input Control (SW)
+- Using The Mechanical Switches On The DE1-SoC Board <br />
+<p align="center">
+<img src="SW/PS_2_Keyboard.png">  <br />
+<p align="left">
+
+### Input Methods
+*- When The SW Is Not ALL Zero, The Game Will Automatically Restart When Lost Or Win* <br />
+*- When The SW Is Not ALL Zero, When The Player Select A Place With Mine, It Will Flag The Position* <br />
+
+## Input Control (KEY / Push Buttons)
+- Using The Mechanical Push Buttons On The DE1-SoC Board <br />
+<p align="center">
+<img src="KEY/PS_2_Keyboard.png">  <br />
+<p align="left">
+
+### Input Methods
+*- Pressing Any One Of The Four Push Buttons Will Cause The Game To Terminate* <br />
