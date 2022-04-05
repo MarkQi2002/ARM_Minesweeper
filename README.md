@@ -20,10 +20,13 @@ Professor: Jonathan Rose <br />
 - The Number Of Surrounding Mines At Any Position Will Be Displayed <br />
 <p align="left">
 <img src="img/num1.png">
-<p align="center">
 <img src="img/num2.png">
-<p align="right">
-<img src="img/num3.png">  <br />
+<img src="img/num3.png">
+<img src="img/num4.png">
+<img src="img/num5.png">
+<img src="img/num6.png">
+<img src="img/num7.png">
+<img src="img/num8.png">
 <p align="left">
 
 ## Input Control (PS/2 Keyboard)
