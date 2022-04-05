@@ -17,6 +17,14 @@ Professor: Jonathan Rose <br />
 - Bomb Number: Randomized using srand, approximately one mine per eight squares <br />
 - Win Condition: Flag every single mines or explore all other squares <br />
 - Lose Condition: If selected a position containing a mine, the game is lost <br />
+- The Number Of Surrounding Mines At Any Position Will Be Displayed <br />
+<p align="left">
+<img src="img/num1.png">  <br />
+<p align="center">
+<img src="img/num2.png">  <br />
+<p align="right>
+<img src="img/num3.png">  <br />
+<p align="left">
 
 ## Input Control (PS/2 Keyboard)
 - Using PS/2 Keyboard Input On The DE1-SoC Board <br />
