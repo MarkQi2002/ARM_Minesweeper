@@ -38,6 +38,7 @@ Professor: Jonathan Rose <br />
 ### Input Methods (Single Key)
 *- Key S: Select The Location Player Want To Explore* <br />
 *- Key F: Flag The Location Player Think Contain A Mine* <br />
+*- Key D: Cheat To Auto Complete The Game Finding All Mines* <br />
 *- Arrow Up: Move One Location Up, and Highlight The Location* <br />
 *- Arrow Down: Move One Location Down, and Highlight The Location* <br />
 *- Arrow Left: Move One Location Left, and Highlight The Location* <br />
