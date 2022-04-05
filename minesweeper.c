@@ -51,6 +51,7 @@ Note: 	A. When PS/2 keyboard detects an input, LEDRs reads the input value and d
 #define KEY_s       0x1B
 #define KEY_f       0x2B
 #define	KEY_c		0x21
+#define KEY_d  		0X23
 
 
 #define ARROW_UP	0x75
@@ -164,6 +165,7 @@ void search(int col, int row);
 
 bool check_win_one();
 bool check_win_two();
+void cheat();
 
 // Variable Declarations
 volatile int * pushButtons = (int * ) KEY_BASE;
@@ -1485,7 +1487,7 @@ int main(void){
 		}
 
 		win = check_win_one();
-		win = check_win_two();
+		if (!win) win = check_win_two();
 
 		// Win Loop
 		while (win == true){
@@ -1607,7 +1609,9 @@ int main(void){
 		*RLEDs = byte3;
 
 		// Analyzing Keyboard Input
-		if (byte3 == KEY_0){
+		if (byte3 == KEY_d) {
+			cheat();
+		} else if (byte3 == KEY_0) {
 			if(confirm_digit1 == false){
 				digit1 = 0;
 			} else if(confirm_digit1 == true){
@@ -1839,6 +1843,19 @@ bool check_win_two(){
 	}
 
 	return true;
+}
+
+// Cheat To Auto Complete The Game
+void cheat(){
+	// Check The Board Array
+	for (row = 0; row < 14; row++){
+		for (col = 0; col < 20; col++){
+			if (bomb_array[col][row] == 1) {
+				num_array[col][row] = -3;
+				total_bomb--;
+			}
+		}
+	}
 }
 
 // ----------------------------------------------------------------------------------Drawing Functions-----------------------------------------------------------------------
