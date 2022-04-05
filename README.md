@@ -19,7 +19,10 @@ Professor: Jonathan Rose <br />
 - Lose Condition: If selected a position containing a mine, the game is lost <br />
 
 ## Input Control
-- Using PS/2 Keyboard Input On The DE1-SoC Board
+- Using PS/2 Keyboard Input On The DE1-SoC Board <br />
+<p align="center">
+<img src="README_img/PS_2_Keyboard.png">  <br />
+<p align="left">
 ### Input Methods (Single Key)
 *- Key S: Select The Location Player Want To Explore* <br />
 *- Key F: Flag The Location Player Think Contain A Mine* <br />
