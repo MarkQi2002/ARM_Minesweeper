@@ -162,7 +162,8 @@ void clear_HEX_display();
 
 void search(int col, int row);
 
-bool check_win();
+bool check_win_one();
+bool check_win_two();
 
 // Variable Declarations
 volatile int * pushButtons = (int * ) KEY_BASE;
@@ -1412,7 +1413,18 @@ int main(void){
 
 			// If The Player Uses The SW The Game Continues
 			if (*SW != 0) {
-				lose = false;
+				// Drain All Remaining Information In The PS2 Input
+				while (RVALID != 0){ 
+					PS2_data = *(PS2_ptr);
+					RVALID = (PS2_data & 0x8000);
+
+					clear_HEX_display();
+					/* always save the last three bytes received */
+					byte1 = byte2;
+					byte2 = byte3;
+					byte3 = PS2_data & 0xFF;
+				}
+
 				total_score = 0;
 				total_bomb = 0;
 				clear_screen();
@@ -1422,7 +1434,19 @@ int main(void){
 				y = 0;
 				xSelect = 0;
 				ySelect = 0;
+				xSelectInput = 0;
+				ySelectInput = 0;
 				selectPos = false;
+				SPACE_pressed = false;
+				ENTER_pressed = false;
+				lose = false;
+				win = false;
+				byte1 = 0;
+				byte2 = 0;
+				byte3 = 0;
+				confirm_digit1 = false;
+				digit1 = 0;
+				digit2 = 0;
 
 				// Reset The Board Array
 				for (row = 0; row < 14; row++){
@@ -1460,7 +1484,9 @@ int main(void){
 			}
 		}
 
-		win = check_win();
+		win = check_win_one();
+		win = check_win_two();
+
 		// Win Loop
 		while (win == true){
 			wait_for_vsync();                           // swap front and back buffers on VGA vertical sync
@@ -1475,7 +1501,18 @@ int main(void){
 
 			// If The Player Uses The SW The Game Continues
 			if (*SW != 0) {
-				win = false;
+				// Drain All Remaining Information In The PS2 Input
+				while(RVALID != 0){ 
+					PS2_data = *(PS2_ptr);
+					RVALID = (PS2_data & 0x8000);
+
+					clear_HEX_display();
+					/* always save the last three bytes received */
+					byte1 = byte2;
+					byte2 = byte3;
+					byte3 = PS2_data & 0xFF;
+				}
+
 				total_score = 0;
 				total_bomb = 0;
 				clear_screen();
@@ -1485,7 +1522,19 @@ int main(void){
 				y = 0;
 				xSelect = 0;
 				ySelect = 0;
+				xSelectInput = 0;
+				ySelectInput = 0;
 				selectPos = false;
+				SPACE_pressed = false;
+				ENTER_pressed = false;
+				lose = false;
+				win = false;
+				byte1 = 0;
+				byte2 = 0;
+				byte3 = 0;
+				confirm_digit1 = false;
+				digit1 = 0;
+				digit2 = 0;
 
 				// Reset The Board Array
 				for (row = 0; row < 14; row++){
@@ -1769,12 +1818,23 @@ void search(int col, int row){
 }
 
 // Check If The Game Is Over Or Not
-bool check_win(){
+bool check_win_one(){
 	// Check The Board Array
 	for (row = 0; row < 14; row++){
 		for (col = 0; col < 20; col++){
 			if (num_array[col][row] != -3 && bomb_array[col][row] == 1) return false;
-			if (num_array[col][row] == 0 && bomb_array[col][row] == 0) return false;
+		}
+	}
+
+	return true;
+}
+
+// Check If The Game Is Over Or Not
+bool check_win_two(){
+	// Check The Board Array
+	for (row = 0; row < 14; row++){
+		for (col = 0; col < 20; col++){
+			if (num_array[col][row] == 0  && bomb_array[col][row] == 0) return false;
 		}
 	}
 
