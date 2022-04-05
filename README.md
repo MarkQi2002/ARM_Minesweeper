@@ -45,7 +45,7 @@ Professor: Jonathan Rose <br />
 ## Input Control (SW)
 - Using The Mechanical Switches On The DE1-SoC Board <br />
 <p align="center">
-<img src="SW/PS_2_Keyboard.png">  <br />
+<img src="README_img/SW.png">  <br />
 <p align="left">
 
 ### Input Methods
@@ -55,8 +55,42 @@ Professor: Jonathan Rose <br />
 ## Input Control (KEY / Push Buttons)
 - Using The Mechanical Push Buttons On The DE1-SoC Board <br />
 <p align="center">
-<img src="KEY/PS_2_Keyboard.png">  <br />
+<img src="README_img/KEY.png">  <br />
 <p align="left">
 
 ### Input Methods
 *- Pressing Any One Of The Four Push Buttons Will Cause The Game To Terminate* <br />
+
+## Output (VGA Display)
+- A 320 By 240 Pixel VGA Display Is Implemented On The DE1-SoC Board <br />
+- All Important Information Regarding Gameplay Is Display On It <br />
+<p align="center">
+<img src="README_img/VGA1.png">  <br />
+<p align="left">
+
+- The Top Row From Left To Right Are Sequentially The Score, Number Of Mines Left, Time Passed In Seconds <br />
+
+- When You Win, You Will See <br />
+<p align="center">
+<img src="img/win_screen.png">  <br />
+<p align="left">
+
+- When You Lose, You Will See <br />
+<p align="center">
+<img src="img/gameOver.png">  <br />
+<p align="left">
+
+## Output (LED)
+- There are a total of 10 LEDs on the DE1-SoC board, they will be showing keyboard input in binary <br />
+<p align="center">
+<img src="img/LED.png">  <br />
+<p align="left">
+
+## Output (Seven Segment Displays)
+- There are six seven segment displays that will indicate when an incorrect input has been entered <br />
+<p align="center">
+<img src="img/HEX.png">  <br />
+<p align="left">
+
+## Conclusion
+- Overall, this was a fun project and the implementation of minesweeper on the DE1-SoC board were very successful <br />
