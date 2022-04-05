@@ -20,12 +20,20 @@ Professor: Jonathan Rose <br />
 
 ## Input Control
 - Using PS/2 Keyboard Input On The DE1-SoC Board
-### Input Methods
-- Key S: Select The Location Player Want To Explore <br />
-- Key F: Flag The Location Player Think Contain A Mine <br />
-- Arrow Up: Move One Location Up, and Highlight The Location <br />
-- Arrow Down: Move One Location Down, and Highlight The Location <br />
-- Arrow Left: Move One Location Left, and Highlight The Location <br />
-- Arrow Right: Move One Location Right, and Highlight The Location <br />
-- Or Input The Exact Coordinate Like Follow:
--- First (Column Location):
+### Input Methods (Single Key)
+*- Key S: Select The Location Player Want To Explore <br />
+*- Key F: Flag The Location Player Think Contain A Mine <br />
+*- Arrow Up: Move One Location Up, and Highlight The Location <br />
+*- Arrow Down: Move One Location Down, and Highlight The Location <br />
+*- Arrow Left: Move One Location Left, and Highlight The Location <br />
+*- Arrow Right: Move One Location Right, and Highlight The Location <br />
+### Exact Coordinate (Multiple Keys)
+#### Column Position (First Step)
+*- The Two Digit Coordinate For The Column You Wanted Seperated By Key C
+#### Seperation (Second Step)
+*- Separate The Column Position And Row Position By A Single Space Key
+#### Row Position (Third Step)
+*- The Two Digit Coordinate For The Column You Wanted Seperated By Key C
+#### Final Step
+*- Press Enter And The Player Has Successfully Selected A Position To Check To Flag <br />
+*- The Input Should Look Something Like #c# 'space' #c# 'enter', where # are digit from 0 - 9
