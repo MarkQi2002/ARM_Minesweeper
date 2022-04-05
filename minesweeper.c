@@ -49,7 +49,9 @@ Note: 	A. When PS/2 keyboard detects an input, LEDRs reads the input value and d
 #define	KEY_8		0x3E
 #define	KEY_9		0x46
 #define KEY_s       0x1B
+#define KEY_f       0x2B
 #define	KEY_c		0x21
+
 
 #define ARROW_UP	0x75
 #define ARROW_DOWN	0x72
@@ -1273,14 +1275,19 @@ const uint16_t win_screen[220][220] = {
 int bomb_array[20][14] = {0};
 int num_array[20][14] = {0};
 int total_score = 0;
+int total_bomb = 0;
 bool display_message = false;
 int xSelect = 0;
 int ySelect = 0;
+int xSelectInput = 0;
+int ySelectInput = 0;
+bool flagMine = false;
 bool selectPos = false;
 
 // Used For For Loops
 int col;
 int row;
+int i, j;
 
 // Data Structure Declaration
 int main(void){
@@ -1360,7 +1367,6 @@ int main(void){
 	int y = 0;
 
 	// Initialize All Mines
-
 	for (col = 0; col < 20; col++){
 		for (row = 0; row < 14; row++){
 			// one mine every 8 squares
@@ -1368,6 +1374,7 @@ int main(void){
 			int value = rand() % 8 + 1;
 			if (value == 1){
 				bomb_array[col][row] = 1;
+				total_bomb++;
 			} else {
 				bomb_array[col][row] = 0;
 			}
@@ -1401,11 +1408,15 @@ int main(void){
 			if (*SW != 0) {
 				lose = false;
 				total_score = 0;
+				total_bomb = 0;
 				clear_screen();
 
 				// Reset Variables
 				x = 0;
 				y = 0;
+				xSelect = 0;
+				ySelect = 0;
+				selectPos = false;
 
 				// Reset The Board Array
 				for (row = 0; row < 14; row++){
@@ -1423,6 +1434,7 @@ int main(void){
 						int value = rand() % 8 + 1;
 						if (value == 1){
 							bomb_array[col][row] = 1;
+							total_bomb++;
 						} else {
 							bomb_array[col][row] = 0;
 						}
@@ -1456,11 +1468,15 @@ int main(void){
 			if (*SW != 0) {
 				win = false;
 				total_score = 0;
+				total_bomb = 0;
 				clear_screen();
 
 				// Reset Variables
 				x = 0;
 				y = 0;
+				xSelect = 0;
+				ySelect = 0;
+				selectPos = false;
 
 				// Reset The Board Array
 				for (row = 0; row < 14; row++){
@@ -1478,6 +1494,7 @@ int main(void){
 						int value = rand() % 8 + 1;
 						if (value == 1){
 							bomb_array[col][row] = 1;
+							total_bomb++;
 						} else {
 							bomb_array[col][row] = 0;
 						}
@@ -1591,6 +1608,37 @@ int main(void){
 			}
 		} else if (byte3 == KEY_s) {
 			selectPos = true;
+		} else if (byte3 == KEY_f) {
+			selectPos = true;
+			flagMine = true;
+		} else if (byte3 == ARROW_UP) {
+			ySelectInput++;
+			if (ySelect > 0 && ySelectInput == 2) {
+				ySelect--;
+				ySelectInput = 0;
+				byte3 = 0;
+			}
+		} else if (byte3 == ARROW_DOWN) {
+			ySelectInput++;
+			if (ySelect < 13 && ySelectInput == 2) {
+				ySelect++;
+				ySelectInput = 0;
+				byte3 = 0;
+			}
+		} else if (byte3 == ARROW_LEFT) {
+			xSelectInput++;
+			if (xSelect > 0 && xSelectInput == 2) {
+				xSelect--;
+				xSelectInput = 0;
+				byte3 = 0;
+			}
+		} else if (byte3 == ARROW_RIGHT) {
+			xSelectInput++;
+			if (xSelect < 19 && xSelectInput == 2) {
+				xSelect++;
+				xSelectInput = 0;
+				byte3 = 0;
+			}
 		}
 
 		// Display Some Important Messages
@@ -1634,16 +1682,30 @@ int main(void){
 			SPACE_pressed = false;
 			ENTER_pressed = false;
 
-			xSelect = x;
-			ySelect = y;
-			selectPos = false;
+			// Update Coordinate
+			if (selectPos){
+				x = xSelect;
+				y = ySelect;
+				selectPos = false;
+			} else {
+				xSelect = x;
+				ySelect = y;
+			}
 
 			if (display_message) printf("(x=%d,y=%d)		", x, y);
 			
 			// If The Place Is A Boob, Game Is Over
 			if (bomb_array[x][y] == 1){
 				// If The SW Is Not Zero, Flag The Position If There Is Indeed A Mine
-				if (*SW != 0) {
+				if (flagMine){
+					flagMine = false;
+					if (num_array[x][y] == 0) {
+						total_score++;
+						total_bomb--;
+					}
+					num_array[x][y] = -3;
+					byte3 = 0x00;
+				} else if (*SW != 0) {
 					num_array[x][y] = -3;
 					total_score++;
 				} else {
@@ -1653,6 +1715,12 @@ int main(void){
 				}
 			// Otherwise Analyze Surrounding Environment
 			} else {
+				// Reset Boolean Variable If Set
+				if (flagMine){
+					flagMine = false;
+					continue;
+				}
+
 				// Recursive Algorithm
 				search(x, y);
 			}
@@ -1661,7 +1729,7 @@ int main(void){
 }
 
 // ----------------------------------------------------------------------------------Searching Algorithm---------------------------------------------------------------------
-// Recursive Search
+// Recursive Search When The Player Select A Position
 void search(int col, int row){
 	if (col >= 20 || col < 0) return;
 	if (row >= 14 || row < 0) return;
@@ -1688,6 +1756,7 @@ void search(int col, int row){
 	search(col + 1, row + 1);
 }
 
+// Check If The Game Is Over Or Not
 bool check_win(){
 	// Check The Board Array
 	for (row = 0; row < 14; row++){
@@ -1851,7 +1920,6 @@ void draw_image(int imageX, int imageY, int row, int col, const uint16_t numberA
 
     // int row = sizeof(numberArray) / sizeof(numberArray[0]);
     // int column = sizeof(numberArray[0]) / sizeof(numberArray[0][0]);
-	int i, j;
     for (i = 0; i < row; ++i){
         for (j = 0; j < col; ++j){
             plot_pixel(x + i, y + j, numberArray[j][i]);
@@ -1875,9 +1943,8 @@ void draw_score(int imageX, int imageY, int number){
 	int y = imageY;
 
 	// eraser previous drawn scores
-	int i, j;
-	for (i = x; i < x+150; i++){
-		for (j = y; j < y+10; j++){
+	for (i = x; i < x + 150; i++){
+		for (j = y; j < y + 10; j++){
 			plot_pixel(i, j, BLACK);
 		}
 	}
@@ -1935,17 +2002,106 @@ void draw_score(int imageX, int imageY, int number){
 		num = 0;
 		num2 = 0;
 		num3 = number;
-	}else if(number <= 99){
+	} else if(number <= 99) {
 		num = 0;
 		num2 = number / 10;
 		num3 = number % 10;
-	}else {
+	} else {
 		num = number / 100;
 		num2 = number % 100 / 10;
 		num3 = number % 100 % 10;
 	}
 
 	int arr_num[3] = {num, num2, num3};
+	for(i = 0; i < 3; i++){
+		if (arr_num[i] == 0){
+			draw_horizontal_line(y+1, x+1, x+6, WHITE);
+			draw_horizontal_line(y+8, x+1, x+6, WHITE);
+
+			draw_vertical_line(x+1, y+1, y+8, WHITE);
+			draw_vertical_line(x+5, y+1, y+8, WHITE);
+
+		} else if (arr_num[i] == 1){
+			draw_vertical_line(x+3, y+1, y+8, WHITE);
+
+		} else if (arr_num[i] == 2){
+			draw_horizontal_line(y+1, x+1, x+6, WHITE);
+			draw_horizontal_line(y+4, x+1, x+6, WHITE);
+			draw_horizontal_line(y+8, x+1, x+6, WHITE);
+
+			draw_vertical_line(x+5, y+1, y+5, WHITE);
+			draw_vertical_line(x+1, y+4, y+8, WHITE);
+
+		} else if (arr_num[i] == 3){
+			draw_horizontal_line(y+1, x+1, x+6, WHITE);
+			draw_horizontal_line(y+4, x+1, x+6, WHITE);
+			draw_horizontal_line(y+8, x+1, x+6, WHITE);
+
+			draw_vertical_line(x+5, y+1, y+8, WHITE);
+
+		} else if (arr_num[i] == 4){
+			draw_line(x+1, y+4, x+2, y+1, WHITE);
+			draw_horizontal_line(y+4, x+1, x+6, WHITE);
+			draw_vertical_line(x+4, y+1, y+9, WHITE);
+
+		} else if (arr_num[i] == 5){
+			draw_horizontal_line(y+1, x+1, x+6, WHITE);
+			draw_horizontal_line(y+4, x+1, x+6, WHITE);
+			draw_horizontal_line(y+8, x+1, x+6, WHITE);
+
+			draw_vertical_line(x+1, y+1, y+5, WHITE);
+			draw_vertical_line(x+5, y+4, y+8, WHITE);
+
+		} else if (arr_num[i] == 6){
+			draw_horizontal_line(y+1, x+1, x+6, WHITE);
+			draw_horizontal_line(y+4, x+1, x+6, WHITE);
+			draw_horizontal_line(y+8, x+1, x+6, WHITE);
+
+			draw_vertical_line(x+1, y+1, y+8, WHITE);
+			draw_vertical_line(x+5, y+4, y+8, WHITE);
+			
+		} else if (arr_num[i] == 7){
+			draw_horizontal_line(y+1, x+1, x+6, WHITE);
+			draw_line(x+4, y+9, x+5, y+1, WHITE);
+			
+		} else if (arr_num[i] == 8){
+			draw_horizontal_line(y+1, x+1, x+6, WHITE);
+			draw_horizontal_line(y+4, x+1, x+6, WHITE);
+			draw_horizontal_line(y+8, x+1, x+6, WHITE);
+
+			draw_vertical_line(x+1, y+1, y+8, WHITE);
+			draw_vertical_line(x+5, y+1, y+8, WHITE);
+		} else if (arr_num[i] == 9){
+			draw_horizontal_line(y+1, x+1, x+6, WHITE);
+			draw_horizontal_line(y+4, x+1, x+6, WHITE);
+			draw_horizontal_line(y+8, x+1, x+6, WHITE);
+
+			draw_vertical_line(x+1, y+1, y+5, WHITE);
+			draw_vertical_line(x+5, y+1, y+8, WHITE);
+		}
+		x = x + 8;
+	}
+
+	x = x + 16;
+
+	// drawing bomb score
+	if (total_bomb <= 9){
+		num = 0;
+		num2 = 0;
+		num3 = total_bomb;
+	} else if(total_bomb <= 99) {
+		num = 0;
+		num2 = total_bomb / 10;
+		num3 = total_bomb % 10;
+	} else {
+		num = total_bomb / 100;
+		num2 = total_bomb % 100 / 10;
+		num3 = total_bomb % 100 % 10;
+	}
+
+	arr_num[0] = num;
+	arr_num[1] = num2;
+	arr_num[2] = num3;
 	for(i = 0; i < 3; i++){
 		if (arr_num[i] == 0){
 			draw_horizontal_line(y+1, x+1, x+6, WHITE);
@@ -2024,12 +2180,11 @@ int find_mine_num(int square_index_x, int sqaure_index_y, int bomb_array[20][14]
 	int x_index = square_index_x;
 	int y_index = sqaure_index_y;
 
-	int i, j;
-	for (i = x_index-1; i <= x_index+1;i++){
+	for (i = x_index - 1; i <= x_index + 1;i++){
 		if (i < 0 || i > 19){
 			continue;
 		}
-		for (j = y_index-1; j <= y_index+1; j++){
+		for (j = y_index - 1; j <= y_index + 1; j++){
 			if (display_message) printf("(%d, %d)=%d		", i, j, bomb_array[i][j]);
 			if (j < 0 || j > 13){
 				continue;
@@ -2050,6 +2205,8 @@ void draw_game_board(int num_array[20][14]){
 			int imageX = 10 + col * 15;
 			int imageY = 25 + row * 15;
 			int display_num = num_array[col][row];
+			
+			// -3 = flagged mine
 			// -2 = squart selected by no mines around it 
 			if (display_num == -3){
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, flag);
@@ -2063,18 +2220,26 @@ void draw_game_board(int num_array[20][14]){
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, num2);
 			} else if(display_num == 3) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, num3);
-			} else if(display_num == 1) {
+			} else if(display_num == 4) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, num4);
-			} else if(display_num == 1) {
+			} else if(display_num == 5) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, num5);
-			} else if(display_num == 1) {
+			} else if(display_num == 6) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, num6);
-			} else if(display_num == 1) {
+			} else if(display_num == 7) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, num7);
-			} else if(display_num == 1) {
+			} else if(display_num == 8) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, num8);
 			} else if(display_num == 0) {
 				draw_image(imageX, imageY, NUM_IMAGE_SIZE, NUM_IMAGE_SIZE, blank_square);
+			}
+
+			// Draw A Green Boax Around The Selected Position
+			if (xSelect == col && ySelect == row){
+				draw_line(imageX, imageY, imageX + 14, imageY, GREEN);
+				draw_line(imageX, imageY + 14, imageX + 14, imageY + 14, GREEN);
+				draw_line(imageX, imageY, imageX, imageY + 14, GREEN);
+				draw_line(imageX + 14, imageY, imageX + 14, imageY + 14, GREEN);
 			}
 		}
 	}
