@@ -19,10 +19,10 @@ Professor: Jonathan Rose <br />
 - Lose Condition: If selected a position containing a mine, the game is lost <br />
 - The Number Of Surrounding Mines At Any Position Will Be Displayed <br />
 <p align="left">
-<img src="img/num1.png">  <br />
+<img src="img/num1.png">
 <p align="center">
-<img src="img/num2.png">  <br />
-<p align="right>
+<img src="img/num2.png">
+<p align="right">
 <img src="img/num3.png">  <br />
 <p align="left">
 
