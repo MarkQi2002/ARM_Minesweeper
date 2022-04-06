@@ -1681,8 +1681,6 @@ int main(void){
 				ySelect--;
 				ySelectInput = 0;
 				byte3 = 0;
-				printf("hellow");
-
 			}
 		} else if (byte3 == ARROW_DOWN) {
 			ySelectInput++;
