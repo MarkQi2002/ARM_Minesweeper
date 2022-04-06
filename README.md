@@ -3,10 +3,6 @@ ECE 243 Final Course Project <br />
 Created By: Mark Qi and Zihui Lu <br />
 Professor: Jonathan Rose <br />
 
-## Game Description
-- Minesweeper is a singl-player puzzle video game. The objective is to clear a rectangular board containing hidden "mines" without detonating any of them. The player will gain hint regarding the location of the mines from the number of neighbouring mines in each field. <br />
-- Microsoft Minesweeper was included in the standard install of Windows 3.1 in 1992. <br />
-
 ## Project Description
 - ARM_Mineweeper is the final project for ECE 243 Winter 2022 at University of Toronto worth 5.6% of the total mark. <br />
 - Using C as the predominant language to code the game and implemented on the DE1-SoC board. <br />
@@ -17,7 +13,7 @@ Professor: Jonathan Rose <br />
 - Bomb Number: Randomized using srand, approximately one mine per eight squares <br />
 - Win Condition: Flag every single mines or explore all other squares <br />
 - Lose Condition: If selected a position containing a mine, the game is lost <br />
-- The Number Of Surrounding Mines At Any Position Will Be Displayed <br />
+- The Number Of Surrounding Mines At Any Position Will Be Displayed After Explored <br />
 <p align="left">
 <img src="img/num1.png">
 <img src="img/num2.png">
@@ -110,5 +106,10 @@ Professor: Jonathan Rose <br />
 <img src="README_img/HEX.png">  <br />
 <p align="left">
 
+## Game Description (History)
+- Minesweeper is a singl-player puzzle video game. The objective is to clear a rectangular board containing hidden "mines" without detonating any of them. The player will gain hint regarding the location of the mines from the number of neighbouring mines in each field. <br />
+- Microsoft Minesweeper was included in the standard install of Windows 3.1 in 1992. <br />
+
 ## Conclusion
 - Overall, this was a fun project and the implementation of minesweeper on the DE1-SoC board were very successful <br />
+- The project is fully completed on 04/05/2022 <br />
