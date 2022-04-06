@@ -53,7 +53,6 @@ Note: 	A. When PS/2 keyboard detects an input, LEDRs reads the input value and d
 #define	KEY_c		0x21
 #define KEY_d  		0X23
 
-
 #define ARROW_UP	0x75
 #define ARROW_DOWN	0x72
 #define ARROW_LEFT	0x6B
@@ -1682,6 +1681,8 @@ int main(void){
 				ySelect--;
 				ySelectInput = 0;
 				byte3 = 0;
+				printf("hellow");
+
 			}
 		} else if (byte3 == ARROW_DOWN) {
 			ySelectInput++;
@@ -1706,6 +1707,10 @@ int main(void){
 			}
 		}
 
+		// RESET The ARROW Input Control
+		if (ySelectInput > 2) ySelectInput = 0;
+		if (xSelectInput > 2) xSelectInput = 0;
+		
 		// Display Some Important Messages
 		if (display_message){
 			printf("(d1=%d,d2=%d)		", digit1, digit2);
