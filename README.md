@@ -112,4 +112,17 @@ Professor: Jonathan Rose <br />
 
 ## Conclusion
 - Overall, this was a fun project and the implementation of minesweeper on the DE1-SoC board were very successful <br />
-- The project is fully completed on 04/05/2022 <br />
+
+## Attribution Table
+### Mark Qi
+*- Created The Recursive Search Algorithm* <br />
+*- Added Controls Using The Switch And Push Button* <br />
+*- Added Controls Using The Arrow Keys On The Keyboard* <br />
+*- Implemented A Few Game Mechanic Related Algorithm* <br />
+  
+### Zihui Lu
+*- Added and Converted Many Graphical Related Pictures* <br />
+*- Implemented Polling Algorithms For Most Keyboard Inputs* <br />
+*- Implemented The Main Game Algorithm* <br />
+*- Added Hexadecimal Display Output And LED Output Indicating User Inputs* <br />
+  
